@@ -59,12 +59,7 @@ const tooltipStyle = {
 function Admin() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
-      <SectionHeading
-        align="left"
-        eyebrow="Analytics"
-        title={<>Platform health at a glance</>}
-        subtitle="Network metrics across rides, savings, retention and impact."
-      />
+      <SectionHeading title="Analytics" />
 
       <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat label="Total rides" value="1.24M" sub="last 30d" />
@@ -191,7 +186,10 @@ function Admin() {
                   tickLine={false}
                   axisLine={false}
                 />
-                <Tooltip contentStyle={tooltipStyle} />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: "oklch(0.96 0.005 260)", opacity: 0.8 }}
+                />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar
                   dataKey="retention"

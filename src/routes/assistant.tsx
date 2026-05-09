@@ -50,7 +50,6 @@ function Help() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-14">
       <SectionHeading
-        eyebrow="Help"
         title={<>How can we help?</>}
         subtitle="Quick answers to common questions about FairRide."
       />

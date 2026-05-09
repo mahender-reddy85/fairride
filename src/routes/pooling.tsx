@@ -25,9 +25,8 @@ function Pooling() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
-        eyebrow="Pooling"
-        title={<>Smarter trips, shared</>}
-        subtitle="Pair riders going the same way, drop fares for both, and cap detours so no one is delayed."
+        title={<>Share your ride</>}
+        subtitle="Travel with others going your way to save money and keep the trip fast."
       />
 
       <div className="mt-12 grid md:grid-cols-4 gap-4">

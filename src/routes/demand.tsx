@@ -55,7 +55,6 @@ function Demand() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
-        eyebrow="Demand"
         title={<>Predict the city, 30 minutes ahead</>}
         subtitle="See where rides will spike so drivers can position smartly — no surge greed required."
       />
@@ -117,36 +116,44 @@ function Demand() {
         </Card>
 
         <Card>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="text-sm font-medium flex items-center gap-2">
               <MapPin className="size-4" /> City heatmap
             </div>
-            <span className="text-xs text-muted-foreground">live</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-destructive animate-pulse">
+              Live
+            </span>
           </div>
-          <div className="grid grid-cols-10 gap-1">
+          <div className="grid grid-cols-10 gap-1 p-1 bg-secondary/20 rounded-xl">
             {Array.from({ length: 100 }).map((_, i) => {
-              const v = Math.random();
-              const c =
-                v > 0.85
+              const x = i % 10;
+              const y = Math.floor(i / 10);
+              // Create natural heatmap clusters
+              const intensity = (Math.cos(x / 2) + Math.sin(y / 2) + 2) / 4 + Math.random() * 0.05;
+              const bg =
+                intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"
-                  : v > 0.7
+                  : intensity > 0.6
                     ? "oklch(0.22 0.02 260 / 0.7)"
-                    : v > 0.5
-                      ? "oklch(0.22 0.02 260 / 0.45)"
-                      : v > 0.3
-                        ? "oklch(0.22 0.02 260 / 0.2)"
-                        : "oklch(0.96 0.005 260)";
-              return <div key={i} className="aspect-square rounded-sm" style={{ background: c }} />;
+                    : intensity > 0.4
+                      ? "oklch(0.22 0.02 260 / 0.4)"
+                      : intensity > 0.2
+                        ? "oklch(0.22 0.02 260 / 0.15)"
+                        : "oklch(1 0 0 / 0.4)";
+              return (
+                <div
+                  key={i}
+                  className="aspect-square rounded-[2px] transition-transform hover:scale-125 hover:z-10 cursor-crosshair"
+                  style={{ background: bg }}
+                />
+              );
             })}
           </div>
-          <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground">
-            <span>Low</span>
-            <div
-              className="flex-1 mx-2 h-1 rounded-full"
-              style={{
-                background: "linear-gradient(90deg, oklch(0.96 0.005 260), oklch(0.22 0.02 260))",
-              }}
-            />
+          <div className="mt-4 flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest">
+            <span>Low demand</span>
+            <div className="flex-1 mx-4 h-1 rounded-full overflow-hidden bg-secondary">
+              <div className="h-full w-2/3 bg-foreground/20" />
+            </div>
             <span>High</span>
           </div>
         </Card>

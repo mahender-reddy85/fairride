@@ -9,7 +9,7 @@ export const Route = createFileRoute("/simulator")({
       { title: "Fare Estimate — FairRide" },
       {
         name: "description",
-        content: "Compare ride fares across providers and see a fair, transparent price.",
+        content: "Compare prices and see a fair, clear price for your ride.",
       },
     ],
   }),
@@ -52,9 +52,8 @@ function Simulator() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
-        eyebrow="Fare Estimate"
-        title={<>Get a fair fare in seconds</>}
-        subtitle="Enter your trip and compare a transparent FairRide price with other apps."
+        title={<>Check your price</>}
+        subtitle="Enter your trip details and see how FairRide's price compares to other apps."
       />
 
       <div className="mt-12 grid lg:grid-cols-5 gap-6">
@@ -88,20 +87,40 @@ function Simulator() {
               <label className="text-xs uppercase tracking-wider text-muted-foreground">
                 Ride type
               </label>
-              <div className="mt-1.5 grid grid-cols-4 gap-2">
-                {(["Auto", "Mini", "Sedan", "SUV"] as RideType[]).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setType(t)}
-                    className={`rounded-md px-3 py-2 text-xs font-medium transition border ${
-                      type === t
-                        ? "bg-foreground text-background border-foreground"
-                        : "border-border hover:bg-secondary"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
+              <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(["Auto", "Mini", "Sedan", "SUV"] as RideType[]).map((t) => {
+                  const images = {
+                    Auto: "/vehicle_auto_3d_1778335919106.png",
+                    Mini: "/vehicle_mini_3d_1778335935334.png",
+                    Sedan: "/vehicle_sedan_3d_1778335948676.png",
+                    SUV: "/vehicle_suv_3d_1778335966152.png",
+                  };
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => setType(t)}
+                      className={`group relative flex flex-col items-center gap-2 rounded-xl p-3 transition-all border-2 ${
+                        type === t
+                          ? "border-foreground bg-foreground/5 shadow-sm"
+                          : "border-border hover:border-foreground/30 hover:bg-secondary/50"
+                      }`}
+                    >
+                      <div className="size-16 flex items-center justify-center rounded-lg bg-secondary/30 transition-transform group-hover:scale-110">
+                        <img src={images[t]} alt="" className="size-14 object-contain" />
+                      </div>
+                      <span
+                        className={`text-[11px] font-bold uppercase tracking-wider ${type === t ? "text-foreground" : "text-muted-foreground"}`}
+                      >
+                        {t}
+                      </span>
+                      {type === t && (
+                        <div className="absolute -top-2 -right-2 size-5 rounded-full bg-foreground flex items-center justify-center">
+                          <div className="size-1.5 rounded-full bg-background" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <button

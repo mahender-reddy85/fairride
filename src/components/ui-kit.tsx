@@ -13,23 +13,16 @@ export function Card({ children, className }: { children: ReactNode; className?:
 export const GlassCard = Card;
 
 export function SectionHeading({
-  eyebrow,
   title,
   subtitle,
   align = "center",
 }: {
-  eyebrow?: string;
   title: ReactNode;
   subtitle?: ReactNode;
   align?: "center" | "left";
 }) {
   return (
     <div className={cn("max-w-3xl", align === "center" ? "mx-auto text-center" : "text-left")}>
-      {eyebrow && (
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground mb-4">
-          {eyebrow}
-        </div>
-      )}
       <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
         {title}
       </h2>

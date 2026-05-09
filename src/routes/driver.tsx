@@ -10,10 +10,14 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
+  Cell,
+  CartesianGrid,
+  Radar,
+  RadarChart,
+  PolarGrid,
 } from "recharts";
 
 export const Route = createFileRoute("/driver")({
@@ -22,8 +26,7 @@ export const Route = createFileRoute("/driver")({
       { title: "Driver Dashboard — FairRide" },
       {
         name: "description",
-        content:
-          "Driver dashboard with earnings, hotspots, commission comparison and personalized insights.",
+        content: "See how much you earned, where to find rides, and tips to make more money.",
       },
     ],
   }),
@@ -61,9 +64,8 @@ function DriverDash() {
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
         align="left"
-        eyebrow="Driver"
-        title={<>Welcome back, Ravi</>}
-        subtitle="You earned ₹612 more than last week. Here's what's working."
+        title={<>Welcome back!</>}
+        subtitle="You made ₹612 more than last week. Great job!"
       />
 
       <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,7 +90,11 @@ function DriverDash() {
                     <stop offset="100%" stopColor="oklch(0.22 0.02 260)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="oklch(0.92 0.005 260)" vertical={false} />
+                <CartesianGrid
+                  stroke="oklch(0.92 0.005 260)"
+                  vertical={false}
+                  strokeDasharray="3 3"
+                />
                 <XAxis
                   dataKey="d"
                   stroke="oklch(0.5 0.015 260)"
@@ -96,19 +102,18 @@ function DriverDash() {
                   tickLine={false}
                   axisLine={false}
                 />
-                <YAxis
-                  stroke="oklch(0.5 0.015 260)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
+                <YAxis hide />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ stroke: "oklch(0.92 0.005 260)", strokeWidth: 1 }}
                 />
-                <Tooltip contentStyle={tooltipStyle} />
                 <Area
                   type="monotone"
                   dataKey="e"
                   stroke="oklch(0.22 0.02 260)"
                   fill="url(#dg)"
                   strokeWidth={2}
+                  activeDot={{ r: 4, fill: "oklch(1 0 0)", stroke: "oklch(0.22 0.02 260)" }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -163,37 +168,31 @@ function DriverDash() {
       </div>
 
       <div className="mt-6 grid lg:grid-cols-3 gap-5">
-        <Card className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2">
-              <Wallet className="size-4" /> Commission you pay
+        <Card className="lg:col-span-2 py-8">
+          <div className="flex items-center justify-between mb-8 px-4">
+            <div className="text-lg font-semibold flex items-center gap-2">
+              <Wallet className="size-5" /> Commission you pay
             </div>
-            <span className="text-xs text-muted-foreground">92% kept</span>
+            <span className="text-sm text-muted-foreground font-medium">92% kept</span>
           </div>
-          <div className="h-56">
+          <div className="h-[300px]">
             <ResponsiveContainer>
-              <BarChart data={commission} layout="vertical">
-                <CartesianGrid stroke="oklch(0.92 0.005 260)" horizontal={false} />
-                <XAxis
-                  type="number"
-                  stroke="oklch(0.5 0.015 260)"
-                  fontSize={11}
-                  unit="%"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={commission}>
+                <PolarGrid stroke="oklch(0.92 0.005 260)" />
+                <PolarAngleAxis
                   dataKey="name"
-                  type="category"
-                  stroke="oklch(0.5 0.015 260)"
-                  fontSize={12}
-                  width={90}
-                  tickLine={false}
-                  axisLine={false}
+                  tick={{ fill: "oklch(0.5 0.015 260)", fontSize: 13, fontWeight: 500 }}
                 />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="pct" radius={[0, 6, 6, 0]} fill="oklch(0.22 0.02 260)" />
-              </BarChart>
+                <Radar
+                  name="Commission %"
+                  dataKey="pct"
+                  stroke="oklch(0.22 0.02 260)"
+                  fill="oklch(0.22 0.02 260)"
+                  fillOpacity={0.4}
+                  dot={{ r: 4, fill: "oklch(0.22 0.02 260)" }}
+                />
+              </RadarChart>
             </ResponsiveContainer>
           </div>
         </Card>
@@ -202,26 +201,44 @@ function DriverDash() {
           <div className="text-sm font-medium flex items-center gap-2 mb-3">
             <Flame className="size-4 text-destructive" /> Hotspot map
           </div>
-          <div className="grid grid-cols-8 gap-1.5">
+          <div className="grid grid-cols-8 gap-1.5 p-1 bg-secondary/30 rounded-lg">
             {Array.from({ length: 64 }).map((_, i) => {
-              const intensity = Math.random();
+              const x = i % 8;
+              const y = Math.floor(i / 8);
+              // Create a more "clustered" demand look using sin/cos
+              const intensity =
+                (Math.sin(x / 1.5) + Math.cos(y / 1.5) + 2) / 4 + Math.random() * 0.1;
               const bg =
-                intensity > 0.85
+                intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"
-                  : intensity > 0.65
+                  : intensity > 0.6
                     ? "oklch(0.22 0.02 260 / 0.7)"
                     : intensity > 0.4
                       ? "oklch(0.22 0.02 260 / 0.4)"
                       : intensity > 0.2
-                        ? "oklch(0.22 0.02 260 / 0.18)"
-                        : "oklch(0.96 0.005 260)";
+                        ? "oklch(0.22 0.02 260 / 0.15)"
+                        : "oklch(1 0 0 / 0.4)";
               return (
-                <div key={i} className="aspect-square rounded-sm" style={{ background: bg }} />
+                <div
+                  key={i}
+                  className="aspect-square rounded-[3px] transition-all hover:scale-110 hover:shadow-lg cursor-crosshair"
+                  style={{ background: bg }}
+                />
               );
             })}
           </div>
-          <div className="mt-3 text-xs text-muted-foreground flex items-center gap-2">
-            <MapPin className="size-3.5" /> Top zone: Indiranagar — 3.2× demand
+          <div className="mt-4 flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest">
+            <span>Quiet</span>
+            <div className="flex gap-1">
+              {[0.1, 0.4, 0.7, 0.95].map((o) => (
+                <div
+                  key={o}
+                  className="size-2 rounded-full"
+                  style={{ background: `oklch(0.22 0.02 260 / ${o})` }}
+                />
+              ))}
+            </div>
+            <span>Busy</span>
           </div>
         </Card>
       </div>

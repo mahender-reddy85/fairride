@@ -6,9 +6,6 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <div className="grid size-8 place-items-center rounded-md bg-foreground text-background text-sm font-semibold">
-              F
-            </div>
             <span className="font-semibold">FairRide</span>
           </div>
           <p className="mt-3 max-w-md text-sm text-muted-foreground">

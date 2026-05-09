@@ -21,6 +21,9 @@ import {
   YAxis,
   Cell,
   CartesianGrid,
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
 } from "recharts";
 import { Footer } from "@/components/Footer";
 
@@ -52,17 +55,14 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6 pt-20 pb-20 lg:pt-28 lg:pb-28">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-up">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground mb-6">
-                Now in private beta
-              </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-foreground">
                 Fair pricing.
                 <br />
                 Better rides.
               </h1>
               <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-                FairRide is a transparent ride marketplace — riders pay a fair price, drivers keep
-                more of what they earn.
+                FairRide is a clear and honest way to book rides. Riders pay a fair price, and
+                drivers get to keep more of what they earn.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -87,51 +87,46 @@ function Landing() {
             </div>
 
             <div className="animate-fade-up" style={{ animationDelay: "120ms" }}>
-              <Card>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-sm font-medium">Commission comparison</div>
-                  <span className="text-xs text-muted-foreground">% per ride</span>
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="text-sm font-medium">Earnings retention</div>
+                  <div className="flex gap-4 text-[10px] font-bold uppercase tracking-tighter">
+                    <span className="flex items-center gap-1">
+                      <div className="size-2 rounded-full bg-foreground" /> You keep
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <div className="size-2 rounded-full bg-secondary" /> Fee
+                    </span>
+                  </div>
                 </div>
-                <div className="h-64">
-                  <ResponsiveContainer>
-                    <BarChart data={commissionData}>
-                      <CartesianGrid stroke="oklch(0.92 0.005 260)" vertical={false} />
-                      <XAxis
-                        dataKey="name"
-                        stroke="oklch(0.5 0.015 260)"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="oklch(0.5 0.015 260)"
-                        fontSize={12}
-                        unit="%"
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          background: "oklch(1 0 0)",
-                          border: "1px solid oklch(0.92 0.005 260)",
-                          borderRadius: 8,
-                          fontSize: 12,
-                        }}
-                      />
-                      <Bar dataKey="v" radius={[6, 6, 0, 0]}>
-                        {commissionData.map((_, i) => (
-                          <Cell
-                            key={i}
-                            fill={i === 2 ? "oklch(0.22 0.02 260)" : "oklch(0.85 0.01 260)"}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="space-y-6">
+                  {[
+                    { name: "Uber", keep: 72, fee: 28, delay: "0ms" },
+                    { name: "Ola", keep: 74, fee: 26, delay: "150ms" },
+                    { name: "FairRide", keep: 92, fee: 8, highlight: true, delay: "300ms" },
+                  ].map((p) => (
+                    <div key={p.name} className="relative">
+                      <div className="flex justify-between text-xs mb-2">
+                        <span className={`font-semibold ${p.highlight ? "text-foreground" : "text-muted-foreground"}`}>
+                          {p.name}
+                        </span>
+                        <span className="font-bold">{p.keep}% kept</span>
+                      </div>
+                      <div className="h-4 w-full flex rounded-full overflow-hidden bg-secondary/30 ring-1 ring-inset ring-border">
+                        <div 
+                          className={`h-full animate-reveal-width ${p.highlight ? "bg-foreground" : "bg-muted-foreground/40"}`} 
+                          style={{ width: `${p.keep}%`, animationDelay: p.delay }} 
+                        />
+                        <div className="h-full bg-secondary" style={{ width: `${p.fee}%` }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  FairRide caps commission at 8%. Drivers keep the rest.
-                </p>
+                <div className="mt-8 pt-6 border-t border-border/50 text-center">
+                  <p className="text-sm font-medium">
+                    Drivers make <span className="text-foreground underline decoration-2 underline-offset-4 decoration-success/30">₹6,400+ more</span> per week on average.
+                  </p>
+                </div>
               </Card>
             </div>
           </div>
@@ -141,41 +136,40 @@ function Landing() {
       {/* FEATURES */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <SectionHeading
-          eyebrow="Platform"
-          title={<>Built for fairness, end to end</>}
-          subtitle="Simple, transparent tools that put riders and drivers on the same side."
+          title={<>Built for fairness</>}
+          subtitle="Simple tools that help both riders and drivers."
         />
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
             {
               icon: Wallet,
-              title: "Transparent pricing",
-              desc: "Clear fare breakdowns for every trip — no hidden surge, no guessing.",
+              title: "Clear pricing",
+              desc: "See exactly what you pay. No hidden fees and no sudden price jumps.",
             },
             {
               icon: Users,
-              title: "Smart pooling",
-              desc: "Match riders going the same way and split the cost.",
+              title: "Share a ride",
+              desc: "Travel with others going your way and split the bill.",
             },
             {
               icon: TrendingUp,
-              title: "Demand insights",
-              desc: "Forecast hotspots so drivers can position smartly.",
+              title: "Driver tips",
+              desc: "We show drivers where more people need rides so they can earn more.",
             },
             {
               icon: BarChart3,
               title: "Earnings tools",
-              desc: "Daily goals and weekly summaries to plan your shifts.",
+              desc: "See how much you made today and plan your work.",
             },
             {
               icon: Shield,
-              title: "8% commission cap",
+              title: "Low commission",
               desc: "Drivers keep 92% of every fare — always.",
             },
             {
               icon: Map,
-              title: "Live coverage",
-              desc: "Available in major Indian cities with steady expansion.",
+              title: "Now in India",
+              desc: "Available in major Indian cities and growing fast.",
             },
           ].map((f) => (
             <Card key={f.title}>
@@ -195,7 +189,6 @@ function Landing() {
           <div>
             <SectionHeading
               align="left"
-              eyebrow="For drivers"
               title={<>Drive less. Earn more.</>}
               subtitle="A simple, fair model that rewards consistent driving without race-to-the-bottom pricing."
             />
@@ -264,7 +257,7 @@ function Landing() {
 
       {/* TESTIMONIALS */}
       <section className="mx-auto max-w-7xl px-6 py-20 border-t border-border">
-        <SectionHeading eyebrow="What people say" title={<>Loved by drivers and riders</>} />
+        <SectionHeading title={<>Loved by drivers and riders</>} />
         <div className="mt-12 grid md:grid-cols-3 gap-5">
           {[
             {
