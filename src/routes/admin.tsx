@@ -1,8 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
 import {
-  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer,
-  XAxis, YAxis, Tooltip, CartesianGrid, Legend,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
 } from "recharts";
 import { Activity, Leaf, Users, ShieldCheck } from "lucide-react";
 
@@ -10,7 +21,10 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { title: "Analytics — FairRide" },
-      { name: "description", content: "Platform analytics: total rides, savings, retention and impact metrics." },
+      {
+        name: "description",
+        content: "Platform analytics: total rides, savings, retention and impact metrics.",
+      },
     ],
   }),
   component: Admin,
@@ -35,7 +49,12 @@ const cohort = Array.from({ length: 6 }).map((_, i) => ({
   market: Math.round(100 - i * 6),
 }));
 
-const tooltipStyle = { background: "oklch(1 0 0)", border: "1px solid oklch(0.92 0.005 260)", borderRadius: 8, fontSize: 12 };
+const tooltipStyle = {
+  background: "oklch(1 0 0)",
+  border: "1px solid oklch(0.92 0.005 260)",
+  borderRadius: 8,
+  fontSize: 12,
+};
 
 function Admin() {
   return (
@@ -57,7 +76,9 @@ function Admin() {
       <div className="mt-6 grid lg:grid-cols-3 gap-5">
         <Card className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2"><Activity className="size-4" /> Rides & savings — last 30 days</div>
+            <div className="text-sm font-medium flex items-center gap-2">
+              <Activity className="size-4" /> Rides & savings — last 30 days
+            </div>
             <span className="text-xs text-muted-foreground">+12.4% w/w</span>
           </div>
           <div className="h-72">
@@ -74,24 +95,58 @@ function Admin() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="oklch(0.92 0.005 260)" vertical={false} />
-                <XAxis dataKey="d" stroke="oklch(0.5 0.015 260)" fontSize={10} interval={3} tickLine={false} axisLine={false} />
-                <YAxis stroke="oklch(0.5 0.015 260)" fontSize={11} tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="d"
+                  stroke="oklch(0.5 0.015 260)"
+                  fontSize={10}
+                  interval={3}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="oklch(0.5 0.015 260)"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Area type="monotone" dataKey="rides" stroke="oklch(0.22 0.02 260)" fill="url(#ag1)" strokeWidth={2} />
-                <Area type="monotone" dataKey="savings" stroke="oklch(0.65 0.16 245)" fill="url(#ag2)" strokeWidth={2} />
+                <Area
+                  type="monotone"
+                  dataKey="rides"
+                  stroke="oklch(0.22 0.02 260)"
+                  fill="url(#ag1)"
+                  strokeWidth={2}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="savings"
+                  stroke="oklch(0.65 0.16 245)"
+                  fill="url(#ag2)"
+                  strokeWidth={2}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
         <Card>
-          <div className="text-sm font-medium flex items-center gap-2 mb-3"><Users className="size-4" /> Ride mix</div>
+          <div className="text-sm font-medium flex items-center gap-2 mb-3">
+            <Users className="size-4" /> Ride mix
+          </div>
           <div className="h-56">
             <ResponsiveContainer>
               <PieChart>
-                <Pie data={split} dataKey="value" innerRadius={48} outerRadius={80} paddingAngle={3}>
-                  {split.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+                <Pie
+                  data={split}
+                  dataKey="value"
+                  innerRadius={48}
+                  outerRadius={80}
+                  paddingAngle={3}
+                >
+                  {split.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i]} />
+                  ))}
                 </Pie>
                 <Tooltip contentStyle={tooltipStyle} />
               </PieChart>
@@ -100,7 +155,10 @@ function Admin() {
           <div className="space-y-1.5 text-xs">
             {split.map((s, i) => (
               <div key={s.name} className="flex items-center justify-between">
-                <span className="flex items-center gap-2"><span className="size-2 rounded-full" style={{ background: COLORS[i] }} />{s.name}</span>
+                <span className="flex items-center gap-2">
+                  <span className="size-2 rounded-full" style={{ background: COLORS[i] }} />
+                  {s.name}
+                </span>
                 <span className="text-muted-foreground">{s.value}%</span>
               </div>
             ))}
@@ -111,18 +169,42 @@ function Admin() {
       <div className="mt-6 grid lg:grid-cols-2 gap-5">
         <Card>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2"><ShieldCheck className="size-4" /> Driver retention vs market</div>
+            <div className="text-sm font-medium flex items-center gap-2">
+              <ShieldCheck className="size-4" /> Driver retention vs market
+            </div>
           </div>
           <div className="h-64">
             <ResponsiveContainer>
               <BarChart data={cohort}>
                 <CartesianGrid stroke="oklch(0.92 0.005 260)" vertical={false} />
-                <XAxis dataKey="m" stroke="oklch(0.5 0.015 260)" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="oklch(0.5 0.015 260)" fontSize={11} unit="%" tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="m"
+                  stroke="oklch(0.5 0.015 260)"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="oklch(0.5 0.015 260)"
+                  fontSize={11}
+                  unit="%"
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="retention" name="FairRide" fill="oklch(0.22 0.02 260)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="market" name="Market avg" fill="oklch(0.85 0.01 260)" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="retention"
+                  name="FairRide"
+                  fill="oklch(0.22 0.02 260)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="market"
+                  name="Market avg"
+                  fill="oklch(0.85 0.01 260)"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -130,7 +212,9 @@ function Admin() {
 
         <Card>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2"><Leaf className="size-4 text-success" /> Operating metrics</div>
+            <div className="text-sm font-medium flex items-center gap-2">
+              <Leaf className="size-4 text-success" /> Operating metrics
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -142,7 +226,9 @@ function Admin() {
               { l: "Commission cap", v: "8%" },
             ].map((s) => (
               <div key={s.l} className="rounded-md border border-border bg-card p-3">
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {s.l}
+                </div>
                 <div className="mt-1 text-xl font-semibold">{s.v}</div>
               </div>
             ))}

@@ -1,18 +1,37 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
 import {
-  ArrowRight, Users, Leaf, TrendingUp, Shield,
-  Map, BarChart3, CheckCircle2, Quote, Wallet,
+  ArrowRight,
+  Users,
+  Leaf,
+  TrendingUp,
+  Shield,
+  Map,
+  BarChart3,
+  CheckCircle2,
+  Quote,
+  Wallet,
 } from "lucide-react";
 import {
-  BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell, CartesianGrid,
+  BarChart,
+  Bar,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Cell,
+  CartesianGrid,
 } from "recharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "FairRide — Fair pricing. Better rides." },
-      { name: "description", content: "A simple, fair ride marketplace with transparent pricing and better driver earnings." },
+      {
+        name: "description",
+        content:
+          "A simple, fair ride marketplace with transparent pricing and better driver earnings.",
+      },
     ],
   }),
   component: Landing,
@@ -36,17 +55,26 @@ function Landing() {
                 Now in private beta
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-foreground">
-                Fair pricing.<br />Better rides.
+                Fair pricing.
+                <br />
+                Better rides.
               </h1>
               <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-                FairRide is a transparent ride marketplace — riders pay a fair price, drivers keep more of what they earn.
+                FairRide is a transparent ride marketplace — riders pay a fair price, drivers keep
+                more of what they earn.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link to="/simulator" className="group inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition">
+                <Link
+                  to="/simulator"
+                  className="group inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition"
+                >
                   Estimate a fare
                   <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
                 </Link>
-                <Link to="/driver" className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition">
+                <Link
+                  to="/driver"
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition"
+                >
                   Driver dashboard
                 </Link>
               </div>
@@ -67,18 +95,42 @@ function Landing() {
                   <ResponsiveContainer>
                     <BarChart data={commissionData}>
                       <CartesianGrid stroke="oklch(0.92 0.005 260)" vertical={false} />
-                      <XAxis dataKey="name" stroke="oklch(0.5 0.015 260)" fontSize={12} tickLine={false} axisLine={false} />
-                      <YAxis stroke="oklch(0.5 0.015 260)" fontSize={12} unit="%" tickLine={false} axisLine={false} />
-                      <Tooltip contentStyle={{ background: "oklch(1 0 0)", border: "1px solid oklch(0.92 0.005 260)", borderRadius: 8, fontSize: 12 }} />
+                      <XAxis
+                        dataKey="name"
+                        stroke="oklch(0.5 0.015 260)"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        stroke="oklch(0.5 0.015 260)"
+                        fontSize={12}
+                        unit="%"
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "oklch(1 0 0)",
+                          border: "1px solid oklch(0.92 0.005 260)",
+                          borderRadius: 8,
+                          fontSize: 12,
+                        }}
+                      />
                       <Bar dataKey="v" radius={[6, 6, 0, 0]}>
                         {commissionData.map((_, i) => (
-                          <Cell key={i} fill={i === 2 ? "oklch(0.22 0.02 260)" : "oklch(0.85 0.01 260)"} />
+                          <Cell
+                            key={i}
+                            fill={i === 2 ? "oklch(0.22 0.02 260)" : "oklch(0.85 0.01 260)"}
+                          />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">FairRide caps commission at 8%. Drivers keep the rest.</p>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  FairRide caps commission at 8%. Drivers keep the rest.
+                </p>
               </Card>
             </div>
           </div>
@@ -94,12 +146,36 @@ function Landing() {
         />
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
-            { icon: Wallet, title: "Transparent pricing", desc: "Clear fare breakdowns for every trip — no hidden surge, no guessing." },
-            { icon: Users, title: "Smart pooling", desc: "Match riders going the same way and split the cost." },
-            { icon: TrendingUp, title: "Demand insights", desc: "Forecast hotspots so drivers can position smartly." },
-            { icon: BarChart3, title: "Earnings tools", desc: "Daily goals and weekly summaries to plan your shifts." },
-            { icon: Shield, title: "8% commission cap", desc: "Drivers keep 92% of every fare — always." },
-            { icon: Map, title: "Live coverage", desc: "Available in major Indian cities with steady expansion." },
+            {
+              icon: Wallet,
+              title: "Transparent pricing",
+              desc: "Clear fare breakdowns for every trip — no hidden surge, no guessing.",
+            },
+            {
+              icon: Users,
+              title: "Smart pooling",
+              desc: "Match riders going the same way and split the cost.",
+            },
+            {
+              icon: TrendingUp,
+              title: "Demand insights",
+              desc: "Forecast hotspots so drivers can position smartly.",
+            },
+            {
+              icon: BarChart3,
+              title: "Earnings tools",
+              desc: "Daily goals and weekly summaries to plan your shifts.",
+            },
+            {
+              icon: Shield,
+              title: "8% commission cap",
+              desc: "Drivers keep 92% of every fare — always.",
+            },
+            {
+              icon: Map,
+              title: "Live coverage",
+              desc: "Available in major Indian cities with steady expansion.",
+            },
           ].map((f) => (
             <Card key={f.title}>
               <div className="grid size-10 place-items-center rounded-md bg-secondary border border-border mb-4">
@@ -135,13 +211,18 @@ function Landing() {
                 </li>
               ))}
             </ul>
-            <Link to="/driver" className="mt-8 inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition">
+            <Link
+              to="/driver"
+              className="mt-8 inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition"
+            >
               Open driver dashboard <ArrowRight className="size-4" />
             </Link>
           </div>
           <Card>
             <div className="text-sm font-medium mb-1">Sample weekly earnings</div>
-            <p className="text-xs text-muted-foreground mb-4">Drivers report a typical 30–45% lift versus other platforms.</p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Drivers report a typical 30–45% lift versus other platforms.
+            </p>
             <div className="space-y-3">
               {[
                 { l: "Monday", v: 1480 },
@@ -158,7 +239,10 @@ function Landing() {
                     <span className="text-foreground font-medium">₹{r.v.toLocaleString()}</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-foreground" style={{ width: `${(r.v / 2240) * 100}%` }} />
+                    <div
+                      className="h-full bg-foreground"
+                      style={{ width: `${(r.v / 2240) * 100}%` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -179,15 +263,24 @@ function Landing() {
 
       {/* TESTIMONIALS */}
       <section className="mx-auto max-w-7xl px-6 py-20 border-t border-border">
-        <SectionHeading
-          eyebrow="What people say"
-          title={<>Loved by drivers and riders</>}
-        />
+        <SectionHeading eyebrow="What people say" title={<>Loved by drivers and riders</>} />
         <div className="mt-12 grid md:grid-cols-3 gap-5">
           {[
-            { q: "I cleared ₹2,300 yesterday — other apps gave me ₹1,400 for the same hours.", a: "Ravi K.", r: "Driver, Bangalore" },
-            { q: "FairRide pooled me with a colleague going the same way. Half the fare.", a: "Anita S.", r: "Rider, Mumbai" },
-            { q: "The hotspot map is genuinely helpful. It just works.", a: "Imran B.", r: "Driver, Delhi" },
+            {
+              q: "I cleared ₹2,300 yesterday — other apps gave me ₹1,400 for the same hours.",
+              a: "Ravi K.",
+              r: "Driver, Bangalore",
+            },
+            {
+              q: "FairRide pooled me with a colleague going the same way. Half the fare.",
+              a: "Anita S.",
+              r: "Rider, Mumbai",
+            },
+            {
+              q: "The hotspot map is genuinely helpful. It just works.",
+              a: "Imran B.",
+              r: "Driver, Delhi",
+            },
           ].map((t) => (
             <Card key={t.a}>
               <Quote className="size-5 text-muted-foreground mb-3" />
@@ -209,12 +302,20 @@ function Landing() {
         <Card className="text-center py-14">
           <Leaf className="mx-auto size-7 text-foreground mb-3" />
           <h3 className="text-3xl sm:text-4xl font-semibold">Ready to ride fair?</h3>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">Try the fare estimator and see how much you'd save on your next trip.</p>
+          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
+            Try the fare estimator and see how much you'd save on your next trip.
+          </p>
           <div className="mt-6 flex flex-wrap gap-3 justify-center">
-            <Link to="/simulator" className="inline-flex items-center gap-2 rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90 transition">
+            <Link
+              to="/simulator"
+              className="inline-flex items-center gap-2 rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90 transition"
+            >
               Estimate a fare <ArrowRight className="size-4" />
             </Link>
-            <Link to="/assistant" className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-secondary transition">
+            <Link
+              to="/assistant"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-secondary transition"
+            >
               Visit help center
             </Link>
           </div>

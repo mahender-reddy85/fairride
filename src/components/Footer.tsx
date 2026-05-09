@@ -6,7 +6,9 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <div className="grid size-8 place-items-center rounded-md bg-foreground text-background text-sm font-semibold">F</div>
+            <div className="grid size-8 place-items-center rounded-md bg-foreground text-background text-sm font-semibold">
+              F
+            </div>
             <span className="font-semibold">FairRide</span>
           </div>
           <p className="mt-3 max-w-md text-sm text-muted-foreground">
@@ -16,19 +18,51 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-semibold mb-3">Product</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/simulator" className="hover:text-foreground">Fare estimate</Link></li>
-            <li><Link to="/driver" className="hover:text-foreground">Driver</Link></li>
-            <li><Link to="/pooling" className="hover:text-foreground">Pooling</Link></li>
-            <li><Link to="/demand" className="hover:text-foreground">Insights</Link></li>
+            <li>
+              <Link to="/simulator" className="hover:text-foreground">
+                Fare estimate
+              </Link>
+            </li>
+            <li>
+              <Link to="/driver" className="hover:text-foreground">
+                Driver
+              </Link>
+            </li>
+            <li>
+              <Link to="/pooling" className="hover:text-foreground">
+                Pooling
+              </Link>
+            </li>
+            <li>
+              <Link to="/demand" className="hover:text-foreground">
+                Insights
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="text-sm font-semibold mb-3">Company</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/admin" className="hover:text-foreground">Analytics</Link></li>
-            <li><Link to="/assistant" className="hover:text-foreground">Help</Link></li>
-            <li><Link to="/" className="hover:text-foreground">About</Link></li>
-            <li><Link to="/" className="hover:text-foreground">Contact</Link></li>
+            <li>
+              <Link to="/admin" className="hover:text-foreground">
+                Analytics
+              </Link>
+            </li>
+            <li>
+              <Link to="/assistant" className="hover:text-foreground">
+                Help
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className="hover:text-foreground">
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/" className="hover:text-foreground">
+                Contact
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

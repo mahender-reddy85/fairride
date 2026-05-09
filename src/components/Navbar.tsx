@@ -30,7 +30,9 @@ export function Navbar() {
               key={l.to}
               to={l.to}
               className="px-3 py-2 text-sm text-muted-foreground rounded-md hover:text-foreground transition"
-              activeProps={{ className: "px-3 py-2 text-sm rounded-md text-foreground bg-secondary" }}
+              activeProps={{
+                className: "px-3 py-2 text-sm rounded-md text-foreground bg-secondary",
+              }}
             >
               {l.label}
             </Link>
@@ -38,12 +40,19 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-2">
-          <Link to="/simulator" className="px-4 py-2 text-sm rounded-md bg-foreground text-background font-medium hover:opacity-90 transition">
+          <Link
+            to="/simulator"
+            className="px-4 py-2 text-sm rounded-md bg-foreground text-background font-medium hover:opacity-90 transition"
+          >
             Estimate fare
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 rounded-md hover:bg-secondary" aria-label="Menu">
+        <button
+          onClick={() => setOpen(!open)}
+          className="lg:hidden p-2 rounded-md hover:bg-secondary"
+          aria-label="Menu"
+        >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </nav>
@@ -52,7 +61,12 @@ export function Navbar() {
         <div className="lg:hidden border-t border-border bg-background">
           <div className="flex flex-col p-3 gap-1">
             {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm hover:bg-secondary">
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setOpen(false)}
+                className="px-3 py-2 rounded-md text-sm hover:bg-secondary"
+              >
                 {l.label}
               </Link>
             ))}

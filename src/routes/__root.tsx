@@ -75,11 +75,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "FairRide — Fair pricing. Better rides." },
-      { name: "description", content: "FairRide is a transparent ride marketplace with fair pricing for riders and better earnings for drivers." },
+      {
+        name: "description",
+        content:
+          "FairRide is a transparent ride marketplace with fair pricing for riders and better earnings for drivers.",
+      },
       { name: "author", content: "FairRide" },
       { name: "theme-color", content: "#ffffff" },
       { property: "og:title", content: "FairRide — Fair pricing. Better rides." },
-      { property: "og:description", content: "Transparent ride pricing, smart pooling and better driver earnings." },
+      {
+        property: "og:description",
+        content: "Transparent ride pricing, smart pooling and better driver earnings.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "FairRide" },

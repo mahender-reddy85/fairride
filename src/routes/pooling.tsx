@@ -6,7 +6,10 @@ export const Route = createFileRoute("/pooling")({
   head: () => ({
     meta: [
       { title: "Pooling — FairRide" },
-      { name: "description", content: "Pair riders heading the same way to cut costs, congestion and emissions." },
+      {
+        name: "description",
+        content: "Pair riders heading the same way to cut costs, congestion and emissions.",
+      },
     ],
   }),
   component: Pooling,
@@ -52,7 +55,9 @@ function Pooling() {
                 <div className="text-sm font-semibold mt-1">{s.t}</div>
                 <div className="text-xs text-muted-foreground mt-1">{s.d}</div>
               </div>
-              {i < arr.length - 1 && <ArrowRight className="hidden md:block size-4 text-muted-foreground shrink-0" />}
+              {i < arr.length - 1 && (
+                <ArrowRight className="hidden md:block size-4 text-muted-foreground shrink-0" />
+              )}
             </div>
           ))}
         </div>
@@ -61,7 +66,9 @@ function Pooling() {
       <div className="mt-6 grid lg:grid-cols-2 gap-5">
         <Card>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2"><Users className="size-4" /> Live pool candidates</div>
+            <div className="text-sm font-medium flex items-center gap-2">
+              <Users className="size-4" /> Live pool candidates
+            </div>
             <span className="text-xs text-muted-foreground">matching</span>
           </div>
           <div className="space-y-3">
@@ -73,9 +80,18 @@ function Pooling() {
                   <span>{m.b}</span>
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-3 text-xs">
-                  <div><div className="text-muted-foreground">Overlap</div><div className="text-base font-semibold">{m.overlap}%</div></div>
-                  <div><div className="text-muted-foreground">Each saves</div><div className="text-base font-semibold text-success">₹{m.save}</div></div>
-                  <div><div className="text-muted-foreground">Status</div><div className="text-base font-semibold">Pairing…</div></div>
+                  <div>
+                    <div className="text-muted-foreground">Overlap</div>
+                    <div className="text-base font-semibold">{m.overlap}%</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Each saves</div>
+                    <div className="text-base font-semibold text-success">₹{m.save}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Status</div>
+                    <div className="text-base font-semibold">Pairing…</div>
+                  </div>
                 </div>
                 <div className="mt-2 h-1 rounded-full bg-secondary overflow-hidden">
                   <div className="h-full bg-foreground" style={{ width: `${m.overlap}%` }} />
@@ -87,7 +103,9 @@ function Pooling() {
 
         <Card>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium flex items-center gap-2"><Leaf className="size-4 text-success" /> Environmental impact</div>
+            <div className="text-sm font-medium flex items-center gap-2">
+              <Leaf className="size-4 text-success" /> Environmental impact
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -104,24 +122,49 @@ function Pooling() {
           </div>
           <div className="mt-4 rounded-md border border-border bg-secondary p-3 text-xs">
             <div className="font-semibold">Insight</div>
-            <p className="mt-1 text-muted-foreground">Routing 38% of solo trips through pools could cut Bangalore CBD congestion by an estimated 14% during peak hours.</p>
+            <p className="mt-1 text-muted-foreground">
+              Routing 38% of solo trips through pools could cut Bangalore CBD congestion by an
+              estimated 14% during peak hours.
+            </p>
           </div>
         </Card>
       </div>
 
       <Card className="mt-6">
-        <div className="flex items-center gap-2 mb-3"><RouteIcon className="size-4" /><span className="text-sm font-medium">Route optimization sample</span></div>
+        <div className="flex items-center gap-2 mb-3">
+          <RouteIcon className="size-4" />
+          <span className="text-sm font-medium">Route optimization sample</span>
+        </div>
         <div className="relative h-56 rounded-md border border-border bg-secondary overflow-hidden">
           <svg viewBox="0 0 600 200" className="absolute inset-0 w-full h-full">
-            <path d="M40,160 C150,100 250,40 560,60" stroke="oklch(0.22 0.02 260)" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeDasharray="6 6">
-              <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.8s" repeatCount="indefinite" />
+            <path
+              d="M40,160 C150,100 250,40 560,60"
+              stroke="oklch(0.22 0.02 260)"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray="6 6"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                from="0"
+                to="-24"
+                dur="1.8s"
+                repeatCount="indefinite"
+              />
             </path>
             <circle cx="40" cy="160" r="6" fill="oklch(0.22 0.02 260)" />
             <circle cx="220" cy="92" r="6" fill="oklch(0.62 0.15 155)" />
             <circle cx="560" cy="60" r="6" fill="oklch(0.65 0.16 245)" />
-            <text x="46" y="180" fontSize="11" fill="oklch(0.5 0.015 260)">Rider A pickup</text>
-            <text x="220" y="84" fontSize="11" fill="oklch(0.62 0.15 155)" textAnchor="middle">+ Rider B (2 min detour)</text>
-            <text x="554" y="50" fontSize="11" fill="oklch(0.5 0.015 260)" textAnchor="end">Shared destination</text>
+            <text x="46" y="180" fontSize="11" fill="oklch(0.5 0.015 260)">
+              Rider A pickup
+            </text>
+            <text x="220" y="84" fontSize="11" fill="oklch(0.62 0.15 155)" textAnchor="middle">
+              + Rider B (2 min detour)
+            </text>
+            <text x="554" y="50" fontSize="11" fill="oklch(0.5 0.015 260)" textAnchor="end">
+              Shared destination
+            </text>
           </svg>
         </div>
       </Card>

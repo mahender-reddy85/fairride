@@ -7,7 +7,11 @@ export const Route = createFileRoute("/assistant")({
   head: () => ({
     meta: [
       { title: "Help Center — FairRide" },
-      { name: "description", content: "Answers to common questions about pricing, pooling, driver earnings and rider safety." },
+      {
+        name: "description",
+        content:
+          "Answers to common questions about pricing, pooling, driver earnings and rider safety.",
+      },
     ],
   }),
   component: Help,
@@ -62,7 +66,9 @@ function Help() {
             >
               <div className="flex items-center justify-between gap-4">
                 <span className="text-sm font-medium text-foreground">{f.q}</span>
-                <ChevronDown className={`size-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`size-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                />
               </div>
               {isOpen && <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>}
             </button>
@@ -72,12 +78,22 @@ function Help() {
 
       <div className="mt-8 grid sm:grid-cols-2 gap-4">
         <Card>
-          <div className="flex items-center gap-2 mb-2"><Mail className="size-4" /><span className="text-sm font-medium">Email support</span></div>
-          <p className="text-sm text-muted-foreground">help@fairride.example — typical response in under 2 hours.</p>
+          <div className="flex items-center gap-2 mb-2">
+            <Mail className="size-4" />
+            <span className="text-sm font-medium">Email support</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            help@fairride.example — typical response in under 2 hours.
+          </p>
         </Card>
         <Card>
-          <div className="flex items-center gap-2 mb-2"><MessageSquare className="size-4" /><span className="text-sm font-medium">In-app chat</span></div>
-          <p className="text-sm text-muted-foreground">Open the app menu and tap Support for 24/7 live help.</p>
+          <div className="flex items-center gap-2 mb-2">
+            <MessageSquare className="size-4" />
+            <span className="text-sm font-medium">In-app chat</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Open the app menu and tap Support for 24/7 live help.
+          </p>
         </Card>
       </div>
     </div>
