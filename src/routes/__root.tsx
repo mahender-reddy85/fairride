@@ -10,7 +10,6 @@ import {
 
 import appCss from "../styles.css?url";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 
 function NotFoundComponent() {
   return (
@@ -120,7 +119,6 @@ function RootComponent() {
         <main className="flex-1">
           <Outlet />
         </main>
-        <Footer />
       </div>
     </QueryClientProvider>
   );

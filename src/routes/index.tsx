@@ -22,6 +22,7 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -321,6 +322,7 @@ function Landing() {
           </div>
         </Card>
       </section>
+      <Footer />
     </div>
   );
 }

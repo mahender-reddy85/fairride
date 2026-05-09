@@ -18,9 +18,6 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <Link to="/" className="flex items-center gap-2">
-          <div className="grid size-8 place-items-center rounded-md bg-foreground text-background text-sm font-semibold">
-            F
-          </div>
           <div className="text-sm font-semibold tracking-tight">FairRide</div>
         </Link>
 
