@@ -2,320 +2,321 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
 import {
   ArrowRight,
+  MapPin,
+  Navigation2,
+  Loader2,
+  TrendingDown,
   Users,
-  Leaf,
-  TrendingUp,
-  Shield,
-  Map,
-  BarChart3,
-  CheckCircle2,
-  Quote,
+  Clock,
+  Car,
   Wallet,
+  Shield,
+  BarChart3,
+  TrendingUp,
 } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Cell,
-  CartesianGrid,
-  RadialBarChart,
-  RadialBar,
-  PolarAngleAxis,
-} from "recharts";
+import { useState, useEffect, useMemo } from "react";
 import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FairRide — Fair pricing. Better rides." },
+      { title: "FairRide — Transparent Pricing. Better Rides." },
       {
         name: "description",
         content:
-          "A simple, fair ride marketplace with transparent pricing and better driver earnings.",
+          "Estimate your fare, see how much you save, and discover a ride marketplace built on fairness.",
       },
     ],
   }),
   component: Landing,
 });
 
-const commissionData = [
-  { name: "Uber", v: 28 },
-  { name: "Ola", v: 26 },
-  { name: "FairRide", v: 8 },
-];
+type RideType = "Mini" | "Sedan" | "SUV" | "Auto";
 
 function Landing() {
+  const [distance, setDistance] = useState<number>(12);
+  const [traffic, setTraffic] = useState<"Light" | "Moderate" | "Heavy">("Moderate");
+  const [timeOfDay, setTimeOfDay] = useState<"Off-Peak" | "Morning Peak" | "Evening Peak" | "Late Night">("Off-Peak");
+  const [type, setType] = useState<RideType>("Sedan");
+  const [loading, setLoading] = useState(false);
+  
+  // Real interactive calculation logic
+  const result = useMemo(() => {
+    const mult = type === "Auto" ? 0.65 : type === "Mini" ? 0.85 : type === "SUV" ? 1.4 : 1;
+    const trafficMult = traffic === "Light" ? 0.9 : traffic === "Moderate" ? 1.0 : 1.3;
+    const timeMult = timeOfDay === "Off-Peak" ? 1.0 : timeOfDay === "Late Night" ? 1.2 : 1.4; // Peaks are 1.4
+    
+    // Base competitor algorithms often stack multipliers heavily during surge
+    const competitorSurge = traffic === "Heavy" || timeOfDay.includes("Peak") ? (trafficMult * timeMult) : 1.0;
+    
+    // FairRide caps surge and relies on transparent base + slight time factor
+    const fairRideSurge = traffic === "Heavy" || timeOfDay.includes("Peak") ? Math.min(trafficMult * 1.1, 1.2) : 1.0;
+
+    const baseRate = 25 + (distance * 14); // ₹25 base + ₹14/km
+    
+    const uber = Math.round(baseRate * mult * competitorSurge * 1.32);
+    const ola = Math.round(baseRate * mult * competitorSurge * 1.28);
+    const fair = Math.round(baseRate * mult * fairRideSurge);
+    
+    // Pooling splits the fair ride cost significantly, assuming 1 match
+    const pool = Math.round(fair * 0.55); 
+    
+    const baseEta = Math.round(distance * 3); // 3 mins per km base
+    const eta = traffic === "Heavy" ? Math.round(baseEta * 1.8) : traffic === "Moderate" ? Math.round(baseEta * 1.3) : baseEta;
+
+    return { distance, base: Math.round(baseRate * mult), uber, ola, fair, pool, eta };
+  }, [distance, traffic, timeOfDay, type]);
+
+  const [displayResult, setDisplayResult] = useState(result);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setDisplayResult(result);
+      setLoading(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [result]);
+
+  const savings = displayResult.uber - displayResult.fair;
+  const poolSavings = displayResult.fair - displayResult.pool;
+
   return (
     <div>
-      {/* HERO */}
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 pt-20 pb-20 lg:pt-28 lg:pb-28">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-up">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-foreground">
-                Fair pricing.
-                <br />
-                Better rides.
-              </h1>
-              <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-                FairRide is a clear and honest way to book rides. Riders pay a fair price, and
-                drivers get to keep more of what they earn.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  to="/simulator"
-                  className="group inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition"
-                >
-                  Estimate a fare
-                  <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  to="/driver"
-                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition"
-                >
-                  Driver dashboard
-                </Link>
-              </div>
-              <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-                <Stat label="Avg. savings" value="34%" />
-                <Stat label="Driver lift" value="+42%" />
-                <Stat label="Commission" value="8%" sub="vs 28% market" />
-              </div>
-            </div>
+      {/* HERO WITH ESTIMATOR */}
+      <section className="border-b border-border bg-gradient-to-b from-background to-secondary/20">
+        <div className="mx-auto max-w-7xl px-6 pt-12 pb-20 lg:pt-20 lg:pb-28">
+          <div className="text-center mb-12 max-w-3xl mx-auto animate-fade-up">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-foreground">
+              Ride fairly.
+              <br />
+              Pay transparently.
+            </h1>
+            <p className="mt-5 text-lg text-muted-foreground">
+              No hidden algorithms. Real-time pricing based on distance and standard traffic. See exactly what you'll pay and how much drivers earn.
+            </p>
+          </div>
 
-            <div className="animate-fade-up" style={{ animationDelay: "120ms" }}>
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="text-sm font-medium">Earnings retention</div>
-                  <div className="flex gap-4 text-[10px] font-bold uppercase tracking-tighter">
-                    <span className="flex items-center gap-1">
-                      <div className="size-2 rounded-full bg-foreground" /> You keep
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <div className="size-2 rounded-full bg-secondary" /> Fee
-                    </span>
+          <div className="grid xl:grid-cols-12 gap-8 items-start max-w-6xl mx-auto animate-fade-up" style={{ animationDelay: "100ms" }}>
+            {/* ESTIMATOR CONTROLS */}
+            <Card className="xl:col-span-5 p-6 shadow-xl border-border/60">
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium">Distance ({distance} km)</label>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="50" 
+                    value={distance} 
+                    onChange={(e) => setDistance(parseInt(e.target.value))}
+                    className="w-full accent-foreground"
+                  />
+                  <div className="flex justify-between text-[10px] text-muted-foreground mt-1 px-1">
+                    <span>1 km</span>
+                    <span>50 km</span>
                   </div>
                 </div>
-                <div className="space-y-6">
-                  {[
-                    { name: "Uber", keep: 72, fee: 28, delay: "0ms" },
-                    { name: "Ola", keep: 74, fee: 26, delay: "150ms" },
-                    { name: "FairRide", keep: 92, fee: 8, highlight: true, delay: "300ms" },
-                  ].map((p) => (
-                    <div key={p.name} className="relative">
-                      <div className="flex justify-between text-xs mb-2">
-                        <span className={`font-semibold ${p.highlight ? "text-foreground" : "text-muted-foreground"}`}>
-                          {p.name}
-                        </span>
-                        <span className="font-bold">{p.keep}% kept</span>
-                      </div>
-                      <div className="h-4 w-full flex rounded-full overflow-hidden bg-secondary/30 ring-1 ring-inset ring-border">
-                        <div 
-                          className={`h-full animate-reveal-width ${p.highlight ? "bg-foreground" : "bg-muted-foreground/40"}`} 
-                          style={{ width: `${p.keep}%`, animationDelay: p.delay }} 
-                        />
-                        <div className="h-full bg-secondary" style={{ width: `${p.fee}%` }} />
-                      </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Traffic</label>
+                    <select 
+                      value={traffic} 
+                      onChange={(e) => setTraffic(e.target.value as any)}
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-foreground"
+                    >
+                      <option value="Light">Light</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Heavy">Heavy</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Time</label>
+                    <select 
+                      value={timeOfDay} 
+                      onChange={(e) => setTimeOfDay(e.target.value as any)}
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-foreground"
+                    >
+                      <option value="Off-Peak">Off-Peak</option>
+                      <option value="Morning Peak">Morning Peak</option>
+                      <option value="Evening Peak">Evening Peak</option>
+                      <option value="Late Night">Late Night</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Ride Type</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {(["Auto", "Mini", "Sedan", "SUV"] as RideType[]).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setType(t)}
+                        className={`py-2 text-xs font-semibold rounded-md transition-all border ${
+                          type === t
+                            ? "border-foreground bg-foreground text-background shadow-sm"
+                            : "border-border bg-card hover:bg-secondary/50 text-foreground"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="pt-4 border-t border-border">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                    <span>Driver Commission</span>
+                    <span className="font-medium text-foreground">8% FairRide vs 28% Market</span>
+                  </div>
+                  <div className="h-1.5 w-full flex rounded-full overflow-hidden bg-secondary">
+                    <div className="h-full bg-success/80" style={{ width: '92%' }} title="Driver Keeps 92%" />
+                    <div className="h-full bg-foreground/20" style={{ width: '8%' }} title="Platform 8%" />
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* ESTIMATOR RESULTS */}
+            <div className="xl:col-span-7 space-y-4">
+              <div className="grid sm:grid-cols-3 gap-3">
+                {[
+                  { label: "Market Avg (Uber)", v: displayResult.uber, good: false },
+                  { label: "Market Avg (Ola)", v: displayResult.ola, good: false },
+                  { label: "FairRide Solo", v: displayResult.fair, good: true },
+                ].map((c) => (
+                  <Card
+                    key={c.label}
+                    className={`p-5 flex flex-col justify-between transition-opacity duration-300 ${c.good ? "border-foreground bg-foreground text-background shadow-lg scale-105" : "border-border bg-card opacity-80"} ${loading ? "opacity-50" : ""}`}
+                  >
+                    <div className={`text-xs uppercase tracking-wider font-semibold ${c.good ? "text-background/80" : "text-muted-foreground"}`}>
+                      {c.label}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-8 pt-6 border-t border-border/50 text-center">
-                  <p className="text-sm font-medium">
-                    Drivers make <span className="text-foreground underline decoration-2 underline-offset-4 decoration-success/30">₹6,400+ more</span> per week on average.
-                  </p>
-                </div>
-              </Card>
+                    <div className="mt-4 text-3xl font-bold">₹{c.v}</div>
+                    {c.good && (
+                      <div className="mt-2 text-xs font-medium text-success-foreground bg-success/20 px-2 py-1 rounded-sm self-start inline-block">
+                        Save ₹{savings}
+                      </div>
+                    )}
+                  </Card>
+                ))}
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Card className={`!p-5 bg-card border-success/30 transition-opacity duration-300 ${loading ? "opacity-50" : ""}`}>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-success">
+                        <Users className="size-4" /> FairRide Pool
+                      </div>
+                      <div className="mt-2 text-3xl font-bold text-foreground">₹{displayResult.pool}</div>
+                      <div className="mt-1 text-sm text-muted-foreground">Split with 1 rider on route</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-semibold text-success">Save extra</div>
+                      <div className="text-lg font-bold text-success">₹{poolSavings}</div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className={`!p-5 transition-opacity duration-300 ${loading ? "opacity-50" : ""}`}>
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    <Clock className="size-4" /> Trip Details
+                  </div>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Est. Travel Time</span>
+                      <span className="font-semibold">{displayResult.eta} mins</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Base Distance</span>
+                      <span className="font-semibold">₹{displayResult.base}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Surge Multiplier</span>
+                      <span className="font-semibold text-warning">
+                        {traffic === "Heavy" || timeOfDay.includes("Peak") ? "1.1x (Capped)" : "1.0x"}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURES */}
+      {/* CORE PILLARS */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <SectionHeading
-          title={<>Built for fairness</>}
-          subtitle="Simple tools that help both riders and drivers."
+          title={<>The FairRide Difference</>}
+          subtitle="A transportation platform built on data, transparency, and fairness."
         />
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[
-            {
-              icon: Wallet,
-              title: "Clear pricing",
-              desc: "See exactly what you pay. No hidden fees and no sudden price jumps.",
-            },
-            {
-              icon: Users,
-              title: "Share a ride",
-              desc: "Travel with others going your way and split the bill.",
-            },
-            {
-              icon: TrendingUp,
-              title: "Driver tips",
-              desc: "We show drivers where more people need rides so they can earn more.",
-            },
-            {
-              icon: BarChart3,
-              title: "Earnings tools",
-              desc: "See how much you made today and plan your work.",
-            },
-            {
-              icon: Shield,
-              title: "Low commission",
-              desc: "Drivers keep 92% of every fare — always.",
-            },
-            {
-              icon: Map,
-              title: "Now in India",
-              desc: "Available in major Indian cities and growing fast.",
-            },
-          ].map((f) => (
-            <Card key={f.title}>
-              <div className="grid size-10 place-items-center rounded-md bg-secondary border border-border mb-4">
-                <f.icon className="size-5 text-foreground" />
-              </div>
-              <h3 className="text-base font-semibold">{f.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* DRIVER BENEFITS */}
-      <section className="mx-auto max-w-7xl px-6 py-20 border-t border-border">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <SectionHeading
-              align="left"
-              title={<>Drive less. Earn more.</>}
-              subtitle="A simple, fair model that rewards consistent driving without race-to-the-bottom pricing."
-            />
-            <ul className="mt-8 space-y-3">
-              {[
-                "92% net payout — guaranteed",
-                "Hotspot suggestions based on real demand",
-                "Daily and weekly earnings summaries",
-                "Fair score that rewards safe driving",
-              ].map((t) => (
-                <li key={t} className="flex items-start gap-3">
-                  <CheckCircle2 className="size-5 text-success mt-0.5" />
-                  <span className="text-sm">{t}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/driver"
-              className="mt-8 inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90 transition"
-            >
-              Open driver dashboard <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <Card>
-            <div className="text-sm font-medium mb-1">Sample weekly earnings</div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Drivers report a typical 30–45% lift versus other platforms.
-            </p>
-            <div className="space-y-3">
-              {[
-                { l: "Monday", v: 1480 },
-                { l: "Tuesday", v: 1610 },
-                { l: "Wednesday", v: 1390 },
-                { l: "Thursday", v: 1720 },
-                { l: "Friday", v: 2010 },
-                { l: "Saturday", v: 2240 },
-                { l: "Sunday", v: 1880 },
-              ].map((r) => (
-                <div key={r.l}>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                    <span>{r.l}</span>
-                    <span className="text-foreground font-medium">₹{r.v.toLocaleString()}</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div
-                      className="h-full bg-foreground"
-                      style={{ width: `${(r.v / 2240) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+        <div className="mt-12 grid sm:grid-cols-3 gap-6">
+          <Card className="flex flex-col h-full border-transparent bg-secondary/50">
+            <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
+              <Shield className="size-6 text-foreground" />
             </div>
+            <h3 className="text-xl font-semibold mb-2">Transparent Pricing</h3>
+            <p className="text-muted-foreground leading-relaxed flex-1">
+              No black-box algorithms maximizing profit during rain. Our fare is strictly calculated on distance, time, and a strict surge cap. You see exactly where your money goes.
+            </p>
+          </Card>
+          <Card className="flex flex-col h-full border-transparent bg-secondary/50">
+            <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
+              <Users className="size-6 text-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Smart Pooling</h3>
+            <p className="text-muted-foreground leading-relaxed flex-1">
+              Our intelligent dispatch pairs riders along optimal routes with minimal detour (under 6 mins). Save up to 45% while reducing city congestion and emissions.
+            </p>
+            <Link to="/pooling" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline">
+              See Pooling Optimizer <ArrowRight className="size-3" />
+            </Link>
+          </Card>
+          <Card className="flex flex-col h-full border-transparent bg-secondary/50">
+            <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
+              <Wallet className="size-6 text-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Driver First</h3>
+            <p className="text-muted-foreground leading-relaxed flex-1">
+              Drivers are partners, not gig workers to be squeezed. We charge a flat 8% commission (compared to 25-30% market average). Drivers earn more, riders pay less.
+            </p>
+            <Link to="/driver" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline">
+              View Driver Insights <ArrowRight className="size-3" />
+            </Link>
           </Card>
         </div>
       </section>
 
       {/* STATS */}
-      <section className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Stat label="Rides completed" value="1.2M" sub="last 30 days" />
-          <Stat label="Saved for riders" value="₹38.4 Cr" sub="cumulative" />
-          <Stat label="Driver retention" value="94%" sub="6-month" />
-          <Stat label="CO₂ avoided" value="612 t" sub="via pooling" />
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section className="mx-auto max-w-7xl px-6 py-20 border-t border-border">
-        <SectionHeading title={<>Loved by drivers and riders</>} />
-        <div className="mt-12 grid md:grid-cols-3 gap-5">
-          {[
-            {
-              q: "I cleared ₹2,300 yesterday — other apps gave me ₹1,400 for the same hours.",
-              a: "Ravi K.",
-              r: "Driver, Bangalore",
-            },
-            {
-              q: "FairRide pooled me with a colleague going the same way. Half the fare.",
-              a: "Anita S.",
-              r: "Rider, Mumbai",
-            },
-            {
-              q: "The hotspot map is genuinely helpful. It just works.",
-              a: "Imran B.",
-              r: "Driver, Delhi",
-            },
-          ].map((t) => (
-            <Card key={t.a}>
-              <Quote className="size-5 text-muted-foreground mb-3" />
-              <p className="text-sm">{t.q}</p>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="size-9 rounded-full bg-secondary border border-border" />
-                <div>
-                  <div className="text-sm font-medium">{t.a}</div>
-                  <div className="text-xs text-muted-foreground">{t.r}</div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="mx-auto max-w-7xl px-6 pb-20">
-        <Card className="text-center py-14">
-          <Leaf className="mx-auto size-7 text-foreground mb-3" />
-          <h3 className="text-3xl sm:text-4xl font-semibold">Ready to ride fair?</h3>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            Try the fare estimator and see how much you'd save on your next trip.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3 justify-center">
-            <Link
-              to="/simulator"
-              className="inline-flex items-center gap-2 rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90 transition"
-            >
-              Estimate a fare <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              to="/assistant"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-secondary transition"
-            >
-              Visit help center
-            </Link>
+      <section className="bg-foreground text-background py-16">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-4xl font-bold mb-1">1.2M+</div>
+              <div className="text-background/70 text-sm font-medium">Rides Completed</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-1">₹38Cr</div>
+              <div className="text-background/70 text-sm font-medium">Saved for Riders</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-1">42%</div>
+              <div className="text-background/70 text-sm font-medium">Avg. Driver Income Lift</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-1">612t</div>
+              <div className="text-background/70 text-sm font-medium">CO₂ Avoided via Pools</div>
+            </div>
           </div>
-        </Card>
+        </div>
       </section>
+
       <Footer />
     </div>
   );
 }
+

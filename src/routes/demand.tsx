@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { TrendingUp, Activity, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/demand")({
   head: () => ({
@@ -25,20 +26,19 @@ export const Route = createFileRoute("/demand")({
   component: Demand,
 });
 
-const hours = Array.from({ length: 24 }).map((_, h) => ({
+const generateBaseHours = () => Array.from({ length: 24 }).map((_, h) => ({
   h: `${h}:00`,
   d: Math.round(
     40 +
       Math.sin((h - 6) / 3.2) * 35 +
-      Math.random() * 10 +
       (h >= 8 && h <= 10 ? 25 : 0) +
-      (h >= 18 && h <= 20 ? 30 : 0),
+      (h >= 18 && h <= 20 ? 30 : 0)
   ),
   p: Math.round(
     45 +
       Math.sin((h - 6) / 3.2) * 32 +
       (h >= 8 && h <= 10 ? 20 : 0) +
-      (h >= 18 && h <= 20 ? 26 : 0),
+      (h >= 18 && h <= 20 ? 26 : 0)
   ),
 }));
 
@@ -52,6 +52,28 @@ const tooltipStyle = {
 };
 
 function Demand() {
+  const [hours, setHours] = useState(generateBaseHours());
+  const [liveMultipliers, setLiveMultipliers] = useState([2.4, 2.1, 1.8]);
+  const [heatmapSeed, setHeatmapSeed] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Add slight jitter to actual demand
+      setHours(prev => prev.map(item => ({
+        ...item,
+        d: Math.max(10, item.d + (Math.random() * 6 - 3))
+      })));
+
+      // Jitter multipliers slightly
+      setLiveMultipliers(prev => prev.map(m => Math.max(1.0, m + (Math.random() * 0.1 - 0.05))));
+      
+      // Update heatmap subtly
+      setHeatmapSeed(s => s + 0.1);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
@@ -72,7 +94,7 @@ function Demand() {
             <div className="text-sm font-medium flex items-center gap-2">
               <Activity className="size-4" /> 24-hour forecast — Bangalore
             </div>
-            <span className="text-xs text-muted-foreground">predicting</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-success animate-pulse">Live</span>
           </div>
           <div className="h-72">
             <ResponsiveContainer>
@@ -100,6 +122,7 @@ function Demand() {
                   stroke="oklch(0.22 0.02 260)"
                   strokeWidth={2}
                   dot={false}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -109,6 +132,7 @@ function Demand() {
                   strokeWidth={2}
                   dot={false}
                   strokeDasharray="5 5"
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -128,8 +152,8 @@ function Demand() {
             {Array.from({ length: 100 }).map((_, i) => {
               const x = i % 10;
               const y = Math.floor(i / 10);
-              // Create natural heatmap clusters
-              const intensity = (Math.cos(x / 2) + Math.sin(y / 2) + 2) / 4 + Math.random() * 0.05;
+              // Create natural heatmap clusters that drift slightly over time
+              const intensity = (Math.cos(x / 2 + heatmapSeed) + Math.sin(y / 2 + heatmapSeed) + 2) / 4;
               const bg =
                 intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"
@@ -143,7 +167,7 @@ function Demand() {
               return (
                 <div
                   key={i}
-                  className="aspect-square rounded-[2px] transition-transform hover:scale-125 hover:z-10 cursor-crosshair"
+                  className="aspect-square rounded-[2px] transition-colors duration-1000 cursor-crosshair"
                   style={{ background: bg }}
                 />
               );
@@ -166,7 +190,7 @@ function Demand() {
               <div className="text-sm font-medium">{z}</div>
               <span className="text-xs text-muted-foreground">in 30 min</span>
             </div>
-            <div className="text-3xl font-semibold">{(2.4 - i * 0.3).toFixed(1)}×</div>
+            <div className="text-3xl font-semibold transition-all">{liveMultipliers[i].toFixed(2)}×</div>
             <div className="text-xs text-muted-foreground mt-1">predicted demand multiplier</div>
             <div className="mt-3 flex items-center gap-2 text-xs">
               <TrendingUp className="size-3.5 text-success" /> Reposition {3 + i} drivers from{" "}

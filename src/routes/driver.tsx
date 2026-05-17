@@ -1,23 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
-import { TrendingUp, Wallet, Trophy, Flame, Lightbulb, MapPin } from "lucide-react";
+import { TrendingUp, Wallet, Trophy, Flame, Lightbulb, IndianRupee } from "lucide-react";
+import { useState, useMemo } from "react";
 import {
   AreaChart,
   Area,
-  BarChart,
-  Bar,
   ResponsiveContainer,
   XAxis,
   YAxis,
   Tooltip,
+  CartesianGrid,
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
-  Cell,
-  CartesianGrid,
-  Radar,
-  RadarChart,
-  PolarGrid,
 } from "recharts";
 
 export const Route = createFileRoute("/driver")({
@@ -43,13 +38,6 @@ const weekly = [
   { d: "Sun", e: 1880 },
 ];
 
-const commission = [
-  { name: "Uber", pct: 28 },
-  { name: "Ola", pct: 26 },
-  { name: "Rapido", pct: 22 },
-  { name: "FairRide", pct: 8 },
-];
-
 const score = [{ name: "score", value: 86, fill: "oklch(0.22 0.02 260)" }];
 
 const tooltipStyle = {
@@ -60,6 +48,18 @@ const tooltipStyle = {
 };
 
 function DriverDash() {
+  const [grossWeekly, setGrossWeekly] = useState(15000);
+
+  const earnings = useMemo(() => {
+    // Competitor takes ~28% (Uber), ~26% (Ola)
+    // FairRide takes exactly 8%
+    const uberNet = Math.round(grossWeekly * 0.72);
+    const olaNet = Math.round(grossWeekly * 0.74);
+    const fairRideNet = Math.round(grossWeekly * 0.92);
+
+    return { uberNet, olaNet, fairRideNet, diff: fairRideNet - uberNet };
+  }, [grossWeekly]);
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
@@ -168,32 +168,56 @@ function DriverDash() {
       </div>
 
       <div className="mt-6 grid lg:grid-cols-3 gap-5">
-        <Card className="lg:col-span-2 py-8">
-          <div className="flex items-center justify-between mb-8 px-4">
+        <Card className="lg:col-span-2 py-6">
+          <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
             <div className="text-lg font-semibold flex items-center gap-2">
-              <Wallet className="size-5" /> Commission you pay
+              <IndianRupee className="size-5" /> Earnings Comparison Calculator
             </div>
-            <span className="text-sm text-muted-foreground font-medium">92% kept</span>
+            <span className="text-sm text-success font-medium hidden sm:block">Keep 92% with FairRide</span>
           </div>
-          <div className="h-[300px]">
-            <ResponsiveContainer>
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={commission}>
-                <PolarGrid stroke="oklch(0.92 0.005 260)" />
-                <PolarAngleAxis
-                  dataKey="name"
-                  tick={{ fill: "oklch(0.5 0.015 260)", fontSize: 13, fontWeight: 500 }}
-                />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Radar
-                  name="Commission %"
-                  dataKey="pct"
-                  stroke="oklch(0.22 0.02 260)"
-                  fill="oklch(0.22 0.02 260)"
-                  fillOpacity={0.4}
-                  dot={{ r: 4, fill: "oklch(0.22 0.02 260)" }}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Weekly Gross Fares (₹)</label>
+              <input 
+                type="range" 
+                min="2000" 
+                max="40000" 
+                step="500"
+                value={grossWeekly} 
+                onChange={(e) => setGrossWeekly(parseInt(e.target.value))}
+                className="w-full accent-foreground"
+              />
+              <div className="text-center mt-2 text-2xl font-bold">₹{grossWeekly.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
+                Enter how much total fare riders pay in a week. Watch how platform commissions eat into your take-home pay on other apps compared to FairRide's flat 8% fee.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 rounded-md border border-border bg-card">
+                <div className="flex justify-between text-xs uppercase tracking-wider text-muted-foreground mb-1">
+                  <span>Uber / Ola (Net 72-74%)</span>
+                  <span>Avg ₹{earnings.uberNet.toLocaleString()}</span>
+                </div>
+                <div className="h-2 w-full flex rounded-full overflow-hidden bg-secondary">
+                  <div className="h-full bg-muted-foreground/40" style={{ width: '73%' }} />
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-md border-2 border-foreground bg-secondary/30 shadow-sm relative overflow-hidden">
+                <div className="flex justify-between text-xs uppercase tracking-wider font-bold mb-1 text-foreground">
+                  <span>FairRide (Net 92%)</span>
+                  <span>₹{earnings.fairRideNet.toLocaleString()}</span>
+                </div>
+                <div className="h-2 w-full flex rounded-full overflow-hidden bg-background ring-1 ring-border">
+                  <div className="h-full bg-foreground" style={{ width: '92%' }} />
+                </div>
+                <div className="mt-3 text-sm font-medium text-success">
+                  +{earnings.diff.toLocaleString()} ₹ extra in your pocket
+                </div>
+              </div>
+            </div>
           </div>
         </Card>
 

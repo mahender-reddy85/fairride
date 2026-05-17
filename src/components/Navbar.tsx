@@ -3,13 +3,10 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/simulator", label: "Fare" },
-  { to: "/driver", label: "Driver" },
+  { to: "/", label: "Estimate Fare" },
   { to: "/pooling", label: "Pooling" },
+  { to: "/driver", label: "Driver Earnings" },
   { to: "/demand", label: "Insights" },
-  { to: "/admin", label: "Analytics" },
-  { to: "/assistant", label: "Help" },
 ] as const;
 
 export function Navbar() {
@@ -38,7 +35,7 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-2">
           <Link
-            to="/simulator"
+            to="/"
             className="px-4 py-2 text-sm rounded-md bg-foreground text-background font-medium hover:opacity-90 transition"
           >
             Estimate fare
