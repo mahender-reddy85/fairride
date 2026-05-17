@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
 import { TrendingUp, Wallet, Trophy, Flame, Lightbulb, IndianRupee } from "lucide-react";
 import { useState, useMemo } from "react";
+import { calculateDriverEarnings } from "@/lib/calculations";
 import {
   AreaChart,
   Area,
@@ -10,9 +11,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  RadialBarChart,
-  RadialBar,
-  PolarAngleAxis,
 } from "recharts";
 
 export const Route = createFileRoute("/driver")({
@@ -38,8 +36,6 @@ const weekly = [
   { d: "Sun", e: 1880 },
 ];
 
-const score = [{ name: "score", value: 86, fill: "oklch(0.22 0.02 260)" }];
-
 const tooltipStyle = {
   background: "oklch(1 0 0)",
   border: "1px solid oklch(0.92 0.005 260)",
@@ -51,13 +47,7 @@ function DriverDash() {
   const [grossWeekly, setGrossWeekly] = useState(15000);
 
   const earnings = useMemo(() => {
-    // Competitor takes ~28% (Uber), ~26% (Ola)
-    // FairRide takes exactly 8%
-    const uberNet = Math.round(grossWeekly * 0.72);
-    const olaNet = Math.round(grossWeekly * 0.74);
-    const fairRideNet = Math.round(grossWeekly * 0.92);
-
-    return { uberNet, olaNet, fairRideNet, diff: fairRideNet - uberNet };
+    return calculateDriverEarnings(grossWeekly);
   }, [grossWeekly]);
 
   return (
@@ -231,8 +221,13 @@ function DriverDash() {
                 <div className="h-2 w-full flex rounded-full overflow-hidden bg-background ring-1 ring-border">
                   <div className="h-full bg-foreground" style={{ width: '92%' }} />
                 </div>
-                <div className="mt-3 text-sm font-medium text-success">
-                  +{earnings.diff.toLocaleString()} ₹ extra in your pocket
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="text-sm font-medium text-success">
+                    +{earnings.diffWeekly.toLocaleString()} ₹ extra / week
+                  </div>
+                  <div className="text-xs font-bold text-foreground bg-background px-2 py-1 rounded border border-border shadow-sm">
+                    Est. Monthly: ₹{earnings.monthlyNet.toLocaleString()}
+                  </div>
                 </div>
               </div>
             </div>

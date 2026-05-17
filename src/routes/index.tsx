@@ -5,17 +5,14 @@ import {
   MapPin,
   Navigation2,
   Loader2,
-  TrendingDown,
   Users,
   Clock,
-  Car,
-  Wallet,
   Shield,
-  BarChart3,
-  TrendingUp,
+  Wallet,
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { Footer } from "@/components/Footer";
+import { calculateFare, RideType, TrafficLevel, TimeOfDay } from "@/lib/calculations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,55 +28,56 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-type RideType = "Mini" | "Sedan" | "SUV" | "Auto";
-
 function Landing() {
+  const [pickup, setPickup] = useState("Indiranagar");
+  const [destination, setDestination] = useState("Koramangala");
   const [distance, setDistance] = useState<number>(12);
-  const [traffic, setTraffic] = useState<"Light" | "Moderate" | "Heavy">("Moderate");
-  const [timeOfDay, setTimeOfDay] = useState<"Off-Peak" | "Morning Peak" | "Evening Peak" | "Late Night">("Off-Peak");
+  const [traffic, setTraffic] = useState<TrafficLevel>("Moderate");
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("Off-Peak");
   const [type, setType] = useState<RideType>("Sedan");
   const [loading, setLoading] = useState(false);
   
-  // Real interactive calculation logic
-  const result = useMemo(() => {
-    const mult = type === "Auto" ? 0.65 : type === "Mini" ? 0.85 : type === "SUV" ? 1.4 : 1;
-    const trafficMult = traffic === "Light" ? 0.9 : traffic === "Moderate" ? 1.0 : 1.3;
-    const timeMult = timeOfDay === "Off-Peak" ? 1.0 : timeOfDay === "Late Night" ? 1.2 : 1.4; // Peaks are 1.4
-    
-    // Base competitor algorithms often stack multipliers heavily during surge
-    const competitorSurge = traffic === "Heavy" || timeOfDay.includes("Peak") ? (trafficMult * timeMult) : 1.0;
-    
-    // FairRide caps surge and relies on transparent base + slight time factor
-    const fairRideSurge = traffic === "Heavy" || timeOfDay.includes("Peak") ? Math.min(trafficMult * 1.1, 1.2) : 1.0;
+  // Basic validation check
+  const isValid = pickup.trim().length > 0 && destination.trim().length > 0;
 
-    const baseRate = 25 + (distance * 14); // ₹25 base + ₹14/km
+  // Real interactive calculation logic using centralized utilities
+  const result = useMemo(() => {
+    if (!isValid) return null;
     
-    const uber = Math.round(baseRate * mult * competitorSurge * 1.32);
-    const ola = Math.round(baseRate * mult * competitorSurge * 1.28);
-    const fair = Math.round(baseRate * mult * fairRideSurge);
+    const { fairRidePrice, marketEstimate } = calculateFare(distance, type, traffic, timeOfDay);
+    
+    // Simulate other market apps (Uber usually higher than Ola, both higher than FairRide)
+    const uber = Math.round(marketEstimate * 1.05);
+    const ola = Math.round(marketEstimate * 0.98);
+    const fair = fairRidePrice;
     
     // Pooling splits the fair ride cost significantly, assuming 1 match
     const pool = Math.round(fair * 0.55); 
     
     const baseEta = Math.round(distance * 3); // 3 mins per km base
     const eta = traffic === "Heavy" ? Math.round(baseEta * 1.8) : traffic === "Moderate" ? Math.round(baseEta * 1.3) : baseEta;
+    
+    // Derive a base cost without surge/multipliers to show in UI
+    const baseRates = { Auto: 15, Mini: 20, Sedan: 25, SUV: 35 };
+    const base = Math.round(distance * baseRates[type]);
 
-    return { distance, base: Math.round(baseRate * mult), uber, ola, fair, pool, eta };
-  }, [distance, traffic, timeOfDay, type]);
+    return { distance, base, uber, ola, fair, pool, eta };
+  }, [distance, traffic, timeOfDay, type, isValid]);
 
   const [displayResult, setDisplayResult] = useState(result);
 
   useEffect(() => {
+    if (!isValid) return;
     setLoading(true);
     const timer = setTimeout(() => {
       setDisplayResult(result);
       setLoading(false);
     }, 400);
     return () => clearTimeout(timer);
-  }, [result]);
+  }, [result, isValid]);
 
-  const savings = displayResult.uber - displayResult.fair;
-  const poolSavings = displayResult.fair - displayResult.pool;
+  const savings = displayResult ? displayResult.uber - displayResult.fair : 0;
+  const poolSavings = displayResult ? displayResult.fair - displayResult.pool : 0;
 
   return (
     <div>
@@ -101,6 +99,29 @@ function Landing() {
             {/* ESTIMATOR CONTROLS */}
             <Card className="xl:col-span-5 p-6 shadow-xl border-border/60">
               <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 flex items-center gap-1"><Navigation2 className="size-3 text-muted-foreground" /> Pickup</label>
+                    <input 
+                      type="text" 
+                      value={pickup}
+                      onChange={(e) => setPickup(e.target.value)}
+                      placeholder="Enter pickup location"
+                      className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 flex items-center gap-1"><MapPin className="size-3 text-destructive" /> Destination</label>
+                    <input 
+                      type="text" 
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                      placeholder="Enter destination"
+                      className={`w-full rounded-md border bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-foreground ${destination.trim() === '' ? 'border-destructive ring-1 ring-destructive' : 'border-border'}`}
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-medium">Distance ({distance} km)</label>
@@ -140,8 +161,7 @@ function Landing() {
                       className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-foreground"
                     >
                       <option value="Off-Peak">Off-Peak</option>
-                      <option value="Morning Peak">Morning Peak</option>
-                      <option value="Evening Peak">Evening Peak</option>
+                      <option value="Peak (Morning/Evening)">Peak (Morning/Evening)</option>
                       <option value="Late Night">Late Night</option>
                     </select>
                   </div>

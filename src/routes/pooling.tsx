@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, SectionHeading, Stat } from "@/components/ui-kit";
 import { Users, Leaf, Route as RouteIcon, ArrowRight, IndianRupee } from "lucide-react";
 import { useState, useMemo } from "react";
+import { calculatePoolingSavings } from "@/lib/calculations";
 
 export const Route = createFileRoute("/pooling")({
   head: () => ({
@@ -22,22 +23,7 @@ function Pooling() {
   const [overlap, setOverlap] = useState(80);
 
   const calc = useMemo(() => {
-    // FairRide splitting logic:
-    // With 1 co-rider (2 total), they split the overlapping portion.
-    // Overlap portion = baseFare * (overlap / 100)
-    // Non-overlap = baseFare - overlap portion
-    // Base cost for this rider = non-overlap + (overlap portion / (coRiders + 1))
-    // We add a tiny 5% convenience fee for pooling routing
-    
-    const overlapPortion = baseFare * (overlap / 100);
-    const uniquePortion = baseFare - overlapPortion;
-    const splitOverlap = overlapPortion / (coRiders + 1);
-    
-    const finalFare = Math.round((uniquePortion + splitOverlap) * 1.05);
-    const saved = baseFare - finalFare;
-    const co2Saved = Math.round((baseFare * 0.05) * coRiders * (overlap / 100)); // proxy for km saved
-    
-    return { finalFare, saved, co2Saved };
+    return calculatePoolingSavings(baseFare, coRiders, overlap);
   }, [baseFare, coRiders, overlap]);
 
   return (
