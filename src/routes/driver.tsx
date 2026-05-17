@@ -126,28 +126,43 @@ function DriverDash() {
               <Trophy className="size-4 text-warning" /> Driver score
             </div>
           </div>
-          <div className="h-44 relative">
-            <ResponsiveContainer>
-              <RadialBarChart
-                innerRadius="70%"
-                outerRadius="100%"
-                data={score}
-                startAngle={220}
-                endAngle={-40}
+          <div className="h-44 relative flex items-center justify-center">
+            <svg viewBox="0 0 200 120" className="w-full h-full max-w-[240px]">
+              {/* Background Arc */}
+              <path
+                d="M 20 100 A 80 80 0 0 1 180 100"
+                fill="none"
+                stroke="currentColor"
+                className="text-secondary"
+                strokeWidth="16"
+                strokeLinecap="round"
+              />
+              {/* Foreground Arc - Animated */}
+              <path
+                d="M 20 100 A 80 80 0 0 1 180 100"
+                fill="none"
+                stroke="currentColor"
+                className="text-foreground"
+                strokeWidth="16"
+                strokeLinecap="round"
+                strokeDasharray="251.2"
+                strokeDashoffset="251.2"
               >
-                <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-                <RadialBar
-                  dataKey="value"
-                  background={{ fill: "oklch(0.96 0.005 260)" }}
-                  cornerRadius={20}
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="251.2"
+                  to={251.2 * (1 - 0.86)} // 86% score
+                  dur="1.5s"
+                  fill="freeze"
+                  calcMode="spline"
+                  keyTimes="0; 1"
+                  keySplines="0.4 0 0.2 1"
                 />
-              </RadialBarChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 grid place-items-center text-center pointer-events-none">
-              <div>
-                <div className="text-4xl font-semibold text-foreground">86</div>
-                <div className="text-xs text-muted-foreground">out of 100</div>
-              </div>
+              </path>
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-end pb-2 pointer-events-none">
+              <div className="text-4xl font-semibold text-foreground">86</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Excellent</div>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">

@@ -55,8 +55,12 @@ function Demand() {
   const [hours, setHours] = useState(generateBaseHours());
   const [liveMultipliers, setLiveMultipliers] = useState([2.4, 2.1, 1.8]);
   const [heatmapSeed, setHeatmapSeed] = useState(0);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
+    // Disable re-animation on tick after the first full draw
+    const timeout = setTimeout(() => setInitialLoad(false), 2000);
+
     const interval = setInterval(() => {
       // Add slight jitter to actual demand
       setHours(prev => prev.map(item => ({
@@ -71,7 +75,10 @@ function Demand() {
       setHeatmapSeed(s => s + 0.1);
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, []);
 
   return (
@@ -122,7 +129,7 @@ function Demand() {
                   stroke="oklch(0.22 0.02 260)"
                   strokeWidth={2}
                   dot={false}
-                  isAnimationActive={false}
+                  isAnimationActive={initialLoad}
                 />
                 <Line
                   type="monotone"
@@ -132,7 +139,7 @@ function Demand() {
                   strokeWidth={2}
                   dot={false}
                   strokeDasharray="5 5"
-                  isAnimationActive={false}
+                  isAnimationActive={initialLoad}
                 />
               </LineChart>
             </ResponsiveContainer>

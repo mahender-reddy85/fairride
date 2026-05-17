@@ -149,20 +149,40 @@ function Landing() {
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">Ride Type</label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {(["Auto", "Mini", "Sedan", "SUV"] as RideType[]).map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setType(t)}
-                        className={`py-2 text-xs font-semibold rounded-md transition-all border ${
-                          type === t
-                            ? "border-foreground bg-foreground text-background shadow-sm"
-                            : "border-border bg-card hover:bg-secondary/50 text-foreground"
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {(["Auto", "Mini", "Sedan", "SUV"] as RideType[]).map((t) => {
+                      const images = {
+                        Auto: "/vehicle_auto_3d_1778335919106.png",
+                        Mini: "/vehicle_mini_3d_1778335935334.png",
+                        Sedan: "/vehicle_sedan_3d_1778335948676.png",
+                        SUV: "/vehicle_suv_3d_1778335966152.png",
+                      };
+                      return (
+                        <button
+                          key={t}
+                          onClick={() => setType(t)}
+                          className={`group relative flex flex-col items-center gap-1 rounded-xl p-2 transition-all border-2 ${
+                            type === t
+                              ? "border-foreground bg-foreground/5 shadow-sm"
+                              : "border-border bg-card hover:border-foreground/30 hover:bg-secondary/50"
+                          }`}
+                        >
+                          <div className="w-full aspect-video flex items-center justify-center rounded-md bg-secondary/30 transition-transform group-hover:scale-105">
+                            <img src={images[t]} alt={t} className="h-10 object-contain drop-shadow-sm" />
+                          </div>
+                          <span
+                            className={`text-[10px] font-bold uppercase tracking-wider ${type === t ? "text-foreground" : "text-muted-foreground"}`}
+                          >
+                            {t}
+                          </span>
+                          {type === t && (
+                            <div className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-foreground flex items-center justify-center">
+                              <div className="size-1 rounded-full bg-background" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
                 

@@ -147,45 +147,107 @@ function Pooling() {
           </Card>
 
           <div className="grid md:grid-cols-2 gap-5">
-            <Card>
+            <Card className="flex flex-col">
               <div className="flex items-center gap-2 mb-3">
                 <RouteIcon className="size-4" />
                 <span className="text-sm font-medium">Route visualization</span>
               </div>
-              <div className="relative h-48 rounded-md border border-border bg-secondary/50 overflow-hidden">
-                <svg viewBox="0 0 600 200" className="absolute inset-0 w-full h-full">
-                  {/* Base Route */}
+              <div className="relative h-64 flex-1 rounded-md border border-border bg-[#eef1f5] dark:bg-[#1a1f2c] overflow-hidden">
+                <svg viewBox="0 0 600 300" className="absolute inset-0 w-full h-full">
+                  <defs>
+                    {/* City Grid Pattern */}
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <rect width="40" height="40" fill="none" />
+                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" className="text-muted/30" />
+                    </pattern>
+                    {/* Map Pin Marker */}
+                    <marker id="pin-start" viewBox="0 0 24 24" refX="12" refY="24" markerWidth="24" markerHeight="24">
+                      <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11.5c-1.93 0-3.5-1.57-3.5-3.5S10.07 4.5 12 4.5 15.5 6.07 15.5 8 13.93 11.5 12 11.5z" fill="currentColor" className="text-foreground" />
+                    </marker>
+                    <marker id="pin-pickup" viewBox="0 0 24 24" refX="12" refY="24" markerWidth="24" markerHeight="24">
+                      <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11.5c-1.93 0-3.5-1.57-3.5-3.5S10.07 4.5 12 4.5 15.5 6.07 15.5 8 13.93 11.5 12 11.5z" fill="oklch(0.62 0.15 155)" />
+                    </marker>
+                    <marker id="pin-end" viewBox="0 0 24 24" refX="12" refY="24" markerWidth="24" markerHeight="24">
+                      <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 16 8 16s8-10.75 8-16c0-4.42-3.58-8-8-8zm0 11.5c-1.93 0-3.5-1.57-3.5-3.5S10.07 4.5 12 4.5 15.5 6.07 15.5 8 13.93 11.5 12 11.5z" fill="oklch(0.65 0.16 245)" />
+                    </marker>
+                  </defs>
+
+                  {/* Base Map / Roads */}
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                  
+                  {/* Major Arterial Roads */}
+                  <path d="M -20,120 Q 200,100 620,80" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="12" />
+                  <path d="M 280,-20 Q 300,150 250,320" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="8" />
+                  <path d="M -20,220 Q 250,250 620,200" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="8" />
+                  <path d="M 450,-20 Q 420,150 480,320" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="6" />
+
+                  {/* Rider A Original Path (Faded out after pooling) */}
                   <path
-                    d="M40,160 C150,100 250,40 560,60"
-                    stroke="oklch(0.5 0.015 260)"
+                    d="M 60,180 Q 150,150 220,110 T 320,80 Q 450,70 540,60"
+                    stroke="currentColor"
+                    className="text-foreground/20"
                     strokeWidth="3"
                     fill="none"
                     strokeLinecap="round"
-                    strokeOpacity="0.3"
+                    strokeDasharray="4 4"
                   />
-                  {/* Shared overlap portion */}
+
+                  {/* Combined Path Base (Rider A starts, then goes to B, then joint) */}
                   <path
-                    d="M220,92 C320,50 450,45 560,60"
+                    d="M 60,180 Q 120,160 160,150 T 220,110 T 320,80 Q 450,70 540,60"
+                    stroke="currentColor"
+                    className="text-foreground"
+                    strokeWidth="4"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+                  
+                  {/* Rider B pickup segment & shared route overlay */}
+                  <path
+                    d="M 220,110 T 320,80 Q 450,70 540,60"
                     stroke="oklch(0.62 0.15 155)"
                     strokeWidth="4"
                     fill="none"
                     strokeLinecap="round"
-                    strokeDasharray="8 6"
+                    strokeDasharray="12 8"
                   >
                     <animate
                       attributeName="stroke-dashoffset"
                       from="0"
-                      to="-28"
+                      to="-40"
                       dur="1.5s"
                       repeatCount="indefinite"
+                      timingFunction="linear"
                     />
                   </path>
-                  <circle cx="40" cy="160" r="6" fill="oklch(0.5 0.015 260)" />
-                  <circle cx="220" cy="92" r="6" fill="oklch(0.62 0.15 155)" />
-                  <circle cx="560" cy="60" r="6" fill="oklch(0.65 0.16 245)" />
-                  <text x="46" y="180" fontSize="11" fill="oklch(0.5 0.015 260)">Your Pickup</text>
-                  <text x="220" y="80" fontSize="11" fill="oklch(0.62 0.15 155)" textAnchor="middle">+ Co-rider</text>
-                  <text x="554" y="46" fontSize="11" fill="oklch(0.5 0.015 260)" textAnchor="end">Shared Drop</text>
+
+                  {/* Markers & Labels */}
+                  {/* Rider A Pickup */}
+                  <circle cx="60" cy="180" r="14" fill="oklch(0.22 0.02 260 / 0.1)" />
+                  <path d="M 60,180 L 60,180" markerEnd="url(#pin-start)" stroke="none" />
+                  
+                  <rect x="25" y="195" width="70" height="20" rx="4" fill="var(--color-card)" className="opacity-90" />
+                  <text x="60" y="208" fontSize="10" fontWeight="bold" fill="currentColor" className="text-foreground" textAnchor="middle">You</text>
+
+                  {/* Rider B Pickup */}
+                  <circle cx="220" cy="110" r="14" fill="oklch(0.62 0.15 155 / 0.1)" />
+                  <path d="M 220,110 L 220,110" markerEnd="url(#pin-pickup)" stroke="none" />
+                  
+                  <rect x="185" y="65" width="70" height="20" rx="4" fill="var(--color-card)" className="opacity-90 shadow-sm" />
+                  <text x="220" y="78" fontSize="10" fontWeight="bold" fill="oklch(0.62 0.15 155)" textAnchor="middle">+ Co-rider</text>
+                  
+                  {/* Joint Destination */}
+                  <circle cx="540" cy="60" r="14" fill="oklch(0.65 0.16 245 / 0.1)" />
+                  <path d="M 540,60 L 540,60" markerEnd="url(#pin-end)" stroke="none" />
+                  
+                  <rect x="495" y="15" width="90" height="20" rx="4" fill="var(--color-card)" className="opacity-90" />
+                  <text x="540" y="28" fontSize="10" fontWeight="bold" fill="oklch(0.65 0.16 245)" textAnchor="middle">Shared Drop</text>
+                  
+                  {/* Small tooltip pointing to detour */}
+                  <path d="M 170,120 L 195,135" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
+                  <circle cx="170" cy="120" r="2" fill="currentColor" className="text-muted-foreground" />
+                  <text x="165" y="115" fontSize="9" fill="currentColor" className="text-muted-foreground" textAnchor="end">2 min detour</text>
+
                 </svg>
               </div>
             </Card>
