@@ -83,7 +83,7 @@ function DriverDash() {
           </div>
           <div className="h-64">
             <ResponsiveContainer>
-              <AreaChart data={weekly}>
+              <AreaChart data={weekly} margin={{ top: 10, right: 15, left: 15, bottom: 0 }}>
                 <defs>
                   <linearGradient id="dg" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0%" stopColor="oklch(0.22 0.02 260)" stopOpacity={0.18} />
@@ -101,6 +101,7 @@ function DriverDash() {
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
+                  tickMargin={8}
                 />
                 <YAxis hide />
                 <Tooltip
@@ -121,64 +122,64 @@ function DriverDash() {
         </Card>
 
         <Card>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="text-sm font-medium flex items-center gap-2">
-              <Trophy className="size-4 text-warning" /> Driver score
+              <Trophy className="size-4 text-warning" /> Driver Tier
             </div>
             <span className="text-xs font-semibold text-success flex items-center gap-1">
-              <TrendingUp className="size-3" /> Top 10%
+              Top 10%
             </span>
           </div>
           
-          <div className="h-28 relative mt-2">
-            <ResponsiveContainer>
-              <AreaChart data={[
-                { d: "Mon", s: 81 },
-                { d: "Tue", s: 82 },
-                { d: "Wed", s: 81 },
-                { d: "Thu", s: 83 },
-                { d: "Fri", s: 84 },
-                { d: "Sat", s: 86 },
-                { d: "Sun", s: 86 }
-              ]}>
-                <defs>
-                  <linearGradient id="scoreGradient" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="5%" stopColor="oklch(0.65 0.16 245)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="oklch(0.65 0.16 245)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <Tooltip 
-                  contentStyle={tooltipStyle}
-                  cursor={{ stroke: "oklch(0.92 0.005 260)", strokeWidth: 1 }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="s" 
-                  stroke="oklch(0.65 0.16 245)" 
-                  fillOpacity={1} 
-                  fill="url(#scoreGradient)" 
-                  strokeWidth={3}
-                  activeDot={{ r: 6, fill: "oklch(1 0 0)", stroke: "oklch(0.65 0.16 245)" }}
-                  isAnimationActive={true}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="flex flex-col items-center justify-center py-2">
+            <div className="text-5xl font-extrabold text-foreground tracking-tight">86</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Gold Status</div>
           </div>
           
-          <div className="flex items-end justify-between mt-2">
-            <div>
-              <div className="text-4xl font-bold text-foreground leading-none">86</div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 font-bold">Excellent</div>
+          <div className="mt-8 relative">
+            {/* Markers */}
+            <div className="absolute -top-5 w-full flex justify-between text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+              <span>Bronze</span>
+              <span>Silver</span>
+              <span className="text-foreground">Gold</span>
+              <span>Plat</span>
             </div>
-            <div className="text-right flex gap-3 text-xs">
-              <div>
-                <div className="font-semibold text-foreground">4.92</div>
-                <div className="text-muted-foreground">rating</div>
+            
+            {/* Bar Background */}
+            <div className="h-3 w-full bg-secondary rounded-full overflow-hidden flex relative">
+              {/* Tiers background dividers */}
+              <div className="absolute inset-0 flex">
+                <div className="w-[30%] border-r border-background/50 h-full"></div>
+                <div className="w-[40%] border-r border-background/50 h-full"></div>
+                <div className="w-[20%] border-r border-background/50 h-full"></div>
+                <div className="w-[10%] h-full"></div>
               </div>
-              <div>
-                <div className="font-semibold text-foreground">98%</div>
-                <div className="text-muted-foreground">accept</div>
-              </div>
+              
+              {/* Animated Progress Fill */}
+              <div 
+                className="h-full bg-gradient-to-r from-muted-foreground via-foreground to-success relative transition-all duration-1000 ease-out"
+                style={{ width: '86%' }}
+              ></div>
+            </div>
+            
+            {/* Current Score Pin */}
+            <div className="absolute top-1" style={{ left: '86%', transform: 'translateX(-50%)' }}>
+              <div className="w-1 h-3 bg-background rounded-full mx-auto shadow-sm ring-1 ring-foreground"></div>
+            </div>
+          </div>
+          
+          <div className="mt-8 grid grid-cols-3 gap-2 text-center text-xs border-t border-border pt-4">
+            <div>
+              <div className="font-semibold text-foreground">4.92</div>
+              <div className="text-muted-foreground">rating</div>
+            </div>
+            <div>
+              <div className="font-semibold text-success">98%</div>
+              <div className="text-muted-foreground">accept</div>
+            </div>
+            <div>
+              <div className="font-semibold text-foreground">0</div>
+              <div className="text-muted-foreground">cancel</div>
             </div>
           </div>
         </Card>

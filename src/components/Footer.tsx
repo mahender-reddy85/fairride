@@ -16,7 +16,7 @@ export function Footer() {
           <h4 className="text-sm font-semibold mb-3">Product</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>
-              <Link to="/simulator" className="hover:text-foreground">
+              <Link to="/" className="hover:text-foreground">
                 Fare estimate
               </Link>
             </li>
@@ -41,12 +41,12 @@ export function Footer() {
           <h4 className="text-sm font-semibold mb-3">Company</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>
-              <Link to="/" className="hover:text-foreground">
+              <Link to="/admin" className="hover:text-foreground">
                 Analytics
               </Link>
             </li>
             <li>
-              <Link to="/" className="hover:text-foreground">
+              <Link to="/assistant" className="hover:text-foreground">
                 Help
               </Link>
             </li>
