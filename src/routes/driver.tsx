@@ -60,7 +60,7 @@ function DriverDash() {
 
       <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat label="Today" value="₹1,820" sub="+18% vs avg" />
-        <Stat label="This week" value="₹12,330" sub="+42% lift" />
+        <Stat label="This week" value="₹12,330" sub="demo data" />
         <Stat label="Net payout" value="92%" sub="vs 72% on Uber" />
         <Stat label="Rides" value="108" sub="last 7 days" />
       </div>
@@ -244,7 +244,7 @@ function DriverDash() {
               const y = Math.floor(i / 8);
               // Create a more "clustered" demand look using sin/cos
               const intensity =
-                (Math.sin(x / 1.5) + Math.cos(y / 1.5) + 2) / 4 + Math.random() * 0.1;
+                (Math.sin(x / 1.5) + Math.cos(y / 1.5) + 2) / 4;
               const bg =
                 intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"

@@ -35,7 +35,7 @@ export function calculateFare(
   const uberEstimate = Math.round((traditionalBase * marketSurge) + 20); // Uber avg
   const olaEstimate = Math.round((traditionalBase * (marketSurge - 0.05)) + 15); // Ola avg
 
-  return { fairRidePrice: finalFairRideFare, marketEstimate: uberEstimate, uberEstimate, olaEstimate };
+  return { fairRidePrice: finalFairRideFare, uberEstimate, olaEstimate };
 }
 
 export function calculatePoolingSavings(

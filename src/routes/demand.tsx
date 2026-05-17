@@ -9,7 +9,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { TrendingUp, Activity, MapPin, CloudRain, Sun, CloudLightning } from "lucide-react";
+import { Activity, MapPin, CloudRain, Sun, CloudLightning } from "lucide-react";
 import { useState } from "react";
 import { MOCK_SCENARIOS, MOCK_HOURLY_DEMAND } from "@/mock-api/scenarios";
 
