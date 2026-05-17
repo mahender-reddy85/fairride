@@ -8,24 +8,34 @@ export function calculateFare(
   traffic: TrafficLevel,
   timeOfDay: TimeOfDay
 ) {
-  const baseRates = { Auto: 15, Mini: 20, Sedan: 25, SUV: 35 };
-  const baseRate = baseRates[type];
+  // Real-world cost components
+  const baseFares = { Auto: 20, Mini: 30, Sedan: 40, SUV: 60 };
+  const perKmRates = { Auto: 10, Mini: 13, Sedan: 16, SUV: 22 };
+  
+  const baseFare = baseFares[type];
+  const perKmRate = perKmRates[type];
+  const distanceCost = distanceKm * perKmRate;
 
-  let calculated = distanceKm * baseRate;
+  // Modifiers
+  const trafficAdjustment = traffic === "Heavy" ? 40 : traffic === "Moderate" ? 15 : 0;
+  const nightCharge = timeOfDay === "Late Night" ? 25 : 0;
+  const cityMultiplier = 1.05; // Standard metro city factor
+  
+  // FairRide platform fee (fixed flat fee vs percentage)
+  const platformFee = 15;
 
-  // Traffic multiplier
-  if (traffic === "Moderate") calculated *= 1.2;
-  if (traffic === "Heavy") calculated *= 1.5;
+  const finalFairRideFare = Math.round(
+    (baseFare + distanceCost + trafficAdjustment + nightCharge + platformFee) * cityMultiplier
+  );
 
-  // Time multiplier
-  if (timeOfDay === "Peak (Morning/Evening)") calculated *= 1.3;
-  if (timeOfDay === "Late Night") calculated *= 1.4;
+  // Compare against traditional algorithms that rely on dynamic surge multipliers
+  const marketSurge = traffic === "Heavy" ? 1.5 : timeOfDay === "Peak (Morning/Evening)" ? 1.3 : 1.1;
+  const traditionalBase = baseFare + distanceCost + (timeOfDay === "Late Night" ? 20 : 0);
+  
+  const uberEstimate = Math.round((traditionalBase * marketSurge) + 20); // Uber avg
+  const olaEstimate = Math.round((traditionalBase * (marketSurge - 0.05)) + 15); // Ola avg
 
-  // FairRide applies a 10% discount on whatever the market rate would be
-  const marketEstimate = Math.round(calculated * 1.35); // Competitors surge more
-  const fairRidePrice = Math.round(calculated);
-
-  return { fairRidePrice, marketEstimate };
+  return { fairRidePrice: finalFairRideFare, marketEstimate: uberEstimate, uberEstimate, olaEstimate };
 }
 
 export function calculatePoolingSavings(
@@ -37,16 +47,14 @@ export function calculatePoolingSavings(
   const uniquePortion = baseFare - overlapPortion;
   const splitOverlap = overlapPortion / (coRiders + 1);
 
-  const finalFare = Math.round((uniquePortion + splitOverlap) * 1.05); // 5% routing fee
+  const finalFare = Math.round((uniquePortion + splitOverlap) + 10); // 10rs routing fee
   const saved = baseFare - finalFare;
-  const co2Saved = Math.round(baseFare * 0.05 * coRiders * (overlapPct / 100)); // proxy for g of CO2
+  const co2Saved = Math.round(baseFare * 0.05 * coRiders * (overlapPct / 100));
 
   return { finalFare, saved, co2Saved };
 }
 
 export function calculateDriverEarnings(grossWeekly: number) {
-  // FairRide takes exactly 8% commission
-  // Market averages 26% to 28%
   const uberNet = Math.round(grossWeekly * 0.72);
   const olaNet = Math.round(grossWeekly * 0.74);
   const fairRideNet = Math.round(grossWeekly * 0.92);

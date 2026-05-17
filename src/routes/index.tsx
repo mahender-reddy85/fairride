@@ -291,67 +291,43 @@ function Landing() {
       {/* CORE PILLARS */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <SectionHeading
-          title={<>The FairRide Difference</>}
-          subtitle="A transportation platform built on data, transparency, and fairness."
+          title={<>Explore Features</>}
+          subtitle="Calculate fares, simulate pooling savings, and compare driver payouts."
         />
         <div className="mt-12 grid sm:grid-cols-3 gap-6">
           <Card className="flex flex-col h-full border-transparent bg-secondary/50">
             <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
               <Shield className="size-6 text-foreground" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Transparent Pricing</h3>
+            <h3 className="text-xl font-semibold mb-2">Fare Calculator</h3>
             <p className="text-muted-foreground leading-relaxed flex-1">
-              No black-box algorithms maximizing profit during rain. Our fare is strictly calculated on distance, time, and a strict surge cap. You see exactly where your money goes.
+              Estimate trip costs based on exact distance, traffic conditions, and time of day. Compare FairRide's base rate calculation against market averages.
             </p>
           </Card>
           <Card className="flex flex-col h-full border-transparent bg-secondary/50">
             <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
               <Users className="size-6 text-foreground" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Smart Pooling</h3>
+            <h3 className="text-xl font-semibold mb-2">Pooling Simulator</h3>
             <p className="text-muted-foreground leading-relaxed flex-1">
-              Our intelligent dispatch pairs riders along optimal routes with minimal detour (under 6 mins). Save up to 45% while reducing city congestion and emissions.
+              Test dynamic fare splitting logic. See how adding co-riders along an overlapping route reduces costs for riders while maintaining driver payouts.
             </p>
-            <Link to="/pooling" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline">
-              See Pooling Optimizer <ArrowRight className="size-3" />
+            <Link to="/pooling" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline text-foreground">
+              Open Pooling Simulator <ArrowRight className="size-3" />
             </Link>
           </Card>
           <Card className="flex flex-col h-full border-transparent bg-secondary/50">
             <div className="grid size-12 place-items-center rounded-lg bg-background border border-border mb-5">
               <Wallet className="size-6 text-foreground" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Driver First</h3>
+            <h3 className="text-xl font-semibold mb-2">Driver Earnings</h3>
             <p className="text-muted-foreground leading-relaxed flex-1">
-              Drivers are partners, not gig workers to be squeezed. We charge a flat 8% commission (compared to 25-30% market average). Drivers earn more, riders pay less.
+              Compare weekly and monthly projected income using a flat 8% platform fee versus the standard 28% market commission.
             </p>
-            <Link to="/driver" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline">
-              View Driver Insights <ArrowRight className="size-3" />
+            <Link to="/driver" className="mt-4 text-sm font-semibold flex items-center gap-1 hover:underline text-foreground">
+              Open Earnings Calculator <ArrowRight className="size-3" />
             </Link>
           </Card>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="bg-foreground text-background py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-4xl font-bold mb-1">1.2M+</div>
-              <div className="text-background/70 text-sm font-medium">Rides Completed</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">₹38Cr</div>
-              <div className="text-background/70 text-sm font-medium">Saved for Riders</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">42%</div>
-              <div className="text-background/70 text-sm font-medium">Avg. Driver Income Lift</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">612t</div>
-              <div className="text-background/70 text-sm font-medium">CO₂ Avoided via Pools</div>
-            </div>
-          </div>
         </div>
       </section>
 

@@ -84,15 +84,15 @@ function Demand() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
       <SectionHeading
-        title={<>Predict the city, 30 minutes ahead</>}
-        subtitle="See where rides will spike so drivers can position smartly — no surge greed required."
+        title={<>Ride Demand Trends</>}
+        subtitle="Live estimated demand and driver positioning insights for prototype simulation."
       />
 
       <div className="mt-12 grid md:grid-cols-4 gap-4">
-        <Stat label="Forecast accuracy" value="94.2%" sub="MAPE 5.8" />
-        <Stat label="Surge avoided" value="−61%" sub="vs market" />
-        <Stat label="Lead time" value="30 min" />
-        <Stat label="Zones tracked" value="184" />
+        <Stat label="Data Source" value="Demo" sub="Sample City Simulation" />
+        <Stat label="Active Drivers" value="1,240" sub="simulated online" />
+        <Stat label="Refresh Rate" value="30 sec" />
+        <Stat label="Monitored Zones" value="184" />
       </div>
 
       <div className="mt-6 grid lg:grid-cols-3 gap-5">
