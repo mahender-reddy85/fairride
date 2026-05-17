@@ -9,8 +9,9 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { TrendingUp, Activity, MapPin } from "lucide-react";
-import { useState, useEffect } from "react";
+import { TrendingUp, Activity, MapPin, CloudRain, Sun, CloudLightning } from "lucide-react";
+import { useState } from "react";
+import { MOCK_SCENARIOS, MOCK_HOURLY_DEMAND } from "@/mock-api/scenarios";
 
 export const Route = createFileRoute("/demand")({
   head: () => ({
@@ -26,22 +27,6 @@ export const Route = createFileRoute("/demand")({
   component: Demand,
 });
 
-const generateBaseHours = () => Array.from({ length: 24 }).map((_, h) => ({
-  h: `${h}:00`,
-  d: Math.round(
-    40 +
-      Math.sin((h - 6) / 3.2) * 35 +
-      (h >= 8 && h <= 10 ? 25 : 0) +
-      (h >= 18 && h <= 20 ? 30 : 0)
-  ),
-  p: Math.round(
-    45 +
-      Math.sin((h - 6) / 3.2) * 32 +
-      (h >= 8 && h <= 10 ? 20 : 0) +
-      (h >= 18 && h <= 20 ? 26 : 0)
-  ),
-}));
-
 const zones = ["Indiranagar", "Koramangala", "Whitefield", "HSR", "MG Road", "BTM"];
 
 const tooltipStyle = {
@@ -52,34 +37,26 @@ const tooltipStyle = {
 };
 
 function Demand() {
-  const [hours, setHours] = useState(generateBaseHours());
-  const [liveMultipliers, setLiveMultipliers] = useState([2.4, 2.1, 1.8]);
-  const [heatmapSeed, setHeatmapSeed] = useState(0);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [activeScenarioId, setActiveScenarioId] = useState(MOCK_SCENARIOS[0].id);
+  const scenario = MOCK_SCENARIOS.find((s) => s.id === activeScenarioId)!;
 
-  useEffect(() => {
-    // Disable re-animation on tick after the first full draw
-    const timeout = setTimeout(() => setInitialLoad(false), 2000);
+  // Scale the mock hourly demand based on the active scenario multiplier
+  const hours = MOCK_HOURLY_DEMAND.map((item) => ({
+    h: item.hour,
+    d: Math.round(item.demandIndex * scenario.demandMultiplier),
+    p: Math.round(item.demandIndex * scenario.demandMultiplier * 1.05), // Predicted slightly offset
+  }));
 
-    const interval = setInterval(() => {
-      // Add slight jitter to actual demand
-      setHours(prev => prev.map(item => ({
-        ...item,
-        d: Math.max(10, item.d + (Math.random() * 6 - 3))
-      })));
+  const liveMultipliers = [
+    (1.4 * scenario.demandMultiplier).toFixed(2),
+    (1.1 * scenario.demandMultiplier).toFixed(2),
+    (1.8 * scenario.demandMultiplier).toFixed(2),
+  ];
 
-      // Jitter multipliers slightly
-      setLiveMultipliers(prev => prev.map(m => Math.max(1.0, m + (Math.random() * 0.1 - 0.05))));
-      
-      // Update heatmap subtly
-      setHeatmapSeed(s => s + 0.1);
-    }, 3000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, []);
+  const weatherIcon = 
+    scenario.weather === "Rain" ? <CloudRain className="size-4" /> : 
+    scenario.weather === "Storm" ? <CloudLightning className="size-4" /> : 
+    <Sun className="size-4" />;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
@@ -88,10 +65,31 @@ function Demand() {
         subtitle="Live estimated demand and driver positioning insights for prototype simulation."
       />
 
-      <div className="mt-12 grid md:grid-cols-4 gap-4">
-        <Stat label="Data Source" value="Demo" sub="Sample City Simulation" />
-        <Stat label="Active Drivers" value="1,240" sub="simulated online" />
-        <Stat label="Refresh Rate" value="30 sec" />
+      {/* Scenario Selector */}
+      <div className="mt-8 flex flex-wrap gap-2 justify-center">
+        {MOCK_SCENARIOS.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => setActiveScenarioId(s.id)}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+              activeScenarioId === s.id 
+                ? "bg-foreground text-background" 
+                : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {s.name}
+          </button>
+        ))}
+      </div>
+      
+      <p className="text-center text-sm text-muted-foreground mt-4 mb-8 max-w-2xl mx-auto">
+        {scenario.description}
+      </p>
+
+      <div className="mt-6 grid md:grid-cols-4 gap-4">
+        <Stat label="Data Source" value="Demo" sub={scenario.name} />
+        <Stat label="Active Drivers" value={scenario.activeDrivers.toLocaleString()} sub="simulated online" />
+        <Stat label="Weather" value={scenario.weather} sub="Impact applied" />
         <Stat label="Monitored Zones" value="184" />
       </div>
 
@@ -101,7 +99,9 @@ function Demand() {
             <div className="text-sm font-medium flex items-center gap-2">
               <Activity className="size-4" /> 24-hour forecast — Bangalore
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-success animate-pulse">Live</span>
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              {weatherIcon} {scenario.weather}
+            </div>
           </div>
           <div className="h-72">
             <ResponsiveContainer>
@@ -129,7 +129,7 @@ function Demand() {
                   stroke="oklch(0.22 0.02 260)"
                   strokeWidth={2}
                   dot={false}
-                  isAnimationActive={initialLoad}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -139,7 +139,7 @@ function Demand() {
                   strokeWidth={2}
                   dot={false}
                   strokeDasharray="5 5"
-                  isAnimationActive={initialLoad}
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -151,16 +151,14 @@ function Demand() {
             <div className="text-sm font-medium flex items-center gap-2">
               <MapPin className="size-4" /> City heatmap
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-destructive animate-pulse">
-              Live
-            </span>
           </div>
           <div className="grid grid-cols-10 gap-1 p-1 bg-secondary/20 rounded-xl">
             {Array.from({ length: 100 }).map((_, i) => {
               const x = i % 10;
               const y = Math.floor(i / 10);
-              // Create natural heatmap clusters that drift slightly over time
-              const intensity = (Math.cos(x / 2 + heatmapSeed) + Math.sin(y / 2 + heatmapSeed) + 2) / 4;
+              // Deterministic seed based on scenario multiplier
+              const seed = scenario.demandMultiplier * 10;
+              const intensity = ((Math.cos(x / 2 + seed) + Math.sin(y / 2 + seed) + 2) / 4) * (scenario.demandMultiplier / 1.5);
               const bg =
                 intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"
@@ -183,7 +181,7 @@ function Demand() {
           <div className="mt-4 flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest">
             <span>Low demand</span>
             <div className="flex-1 mx-4 h-1 rounded-full overflow-hidden bg-secondary">
-              <div className="h-full w-2/3 bg-foreground/20" />
+              <div className="h-full bg-foreground/20" style={{ width: `${Math.min(100, scenario.demandMultiplier * 60)}%` }} />
             </div>
             <span>High</span>
           </div>
@@ -195,25 +193,13 @@ function Demand() {
           <Card key={z}>
             <div className="flex items-center justify-between mb-2">
               <div className="text-sm font-medium">{z}</div>
-              <span className="text-xs text-muted-foreground">in 30 min</span>
+              <span className="text-xs text-muted-foreground">Scenario avg</span>
             </div>
-            <div className="text-3xl font-semibold transition-all">{liveMultipliers[i].toFixed(2)}×</div>
-            <div className="text-xs text-muted-foreground mt-1">predicted demand multiplier</div>
-            <div className="mt-3 flex items-center gap-2 text-xs">
-              <TrendingUp className="size-3.5 text-success" /> Reposition {3 + i} drivers from{" "}
-              {zones[i + 3]}.
-            </div>
+            <div className="text-3xl font-semibold transition-all">{liveMultipliers[i]}×</div>
+            <div className="text-xs text-muted-foreground mt-1">demand multiplier</div>
           </Card>
         ))}
       </div>
-
-      <Card className="mt-6">
-        <div className="text-sm font-medium mb-2">Surge reduction plan</div>
-        <p className="text-sm text-muted-foreground">
-          By rebalancing 18 drivers from low-demand BTM into MG Road in the next 12 minutes, we
-          project a surge avoidance of 1.6× and ₹14,200 saved for riders during the next hour.
-        </p>
-      </Card>
     </div>
   );
 }

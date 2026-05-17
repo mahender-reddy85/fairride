@@ -9,19 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SimulatorRouteImport } from './routes/simulator'
 import { Route as PoolingRouteImport } from './routes/pooling'
 import { Route as DriverRouteImport } from './routes/driver'
 import { Route as DemandRouteImport } from './routes/demand'
-import { Route as AssistantRouteImport } from './routes/assistant'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
-const SimulatorRoute = SimulatorRouteImport.update({
-  id: '/simulator',
-  path: '/simulator',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PoolingRoute = PoolingRouteImport.update({
   id: '/pooling',
   path: '/pooling',
@@ -37,16 +29,6 @@ const DemandRoute = DemandRouteImport.update({
   path: '/demand',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AssistantRoute = AssistantRouteImport.update({
-  id: '/assistant',
-  path: '/assistant',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,81 +37,40 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/assistant': typeof AssistantRoute
   '/demand': typeof DemandRoute
   '/driver': typeof DriverRoute
   '/pooling': typeof PoolingRoute
-  '/simulator': typeof SimulatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/assistant': typeof AssistantRoute
   '/demand': typeof DemandRoute
   '/driver': typeof DriverRoute
   '/pooling': typeof PoolingRoute
-  '/simulator': typeof SimulatorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/assistant': typeof AssistantRoute
   '/demand': typeof DemandRoute
   '/driver': typeof DriverRoute
   '/pooling': typeof PoolingRoute
-  '/simulator': typeof SimulatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/assistant'
-    | '/demand'
-    | '/driver'
-    | '/pooling'
-    | '/simulator'
+  fullPaths: '/' | '/demand' | '/driver' | '/pooling'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin'
-    | '/assistant'
-    | '/demand'
-    | '/driver'
-    | '/pooling'
-    | '/simulator'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/assistant'
-    | '/demand'
-    | '/driver'
-    | '/pooling'
-    | '/simulator'
+  to: '/' | '/demand' | '/driver' | '/pooling'
+  id: '__root__' | '/' | '/demand' | '/driver' | '/pooling'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
-  AssistantRoute: typeof AssistantRoute
   DemandRoute: typeof DemandRoute
   DriverRoute: typeof DriverRoute
   PoolingRoute: typeof PoolingRoute
-  SimulatorRoute: typeof SimulatorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/simulator': {
-      id: '/simulator'
-      path: '/simulator'
-      fullPath: '/simulator'
-      preLoaderRoute: typeof SimulatorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pooling': {
       id: '/pooling'
       path: '/pooling'
@@ -151,20 +92,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemandRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/assistant': {
-      id: '/assistant'
-      path: '/assistant'
-      fullPath: '/assistant'
-      preLoaderRoute: typeof AssistantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -177,12 +104,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
-  AssistantRoute: AssistantRoute,
   DemandRoute: DemandRoute,
   DriverRoute: DriverRoute,
   PoolingRoute: PoolingRoute,
-  SimulatorRoute: SimulatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

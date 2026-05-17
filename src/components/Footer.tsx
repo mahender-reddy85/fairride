@@ -17,37 +17,22 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/" className="hover:text-foreground">
-                Fare estimate
-              </Link>
-            </li>
-            <li>
-              <Link to="/driver" className="hover:text-foreground">
-                Driver
+                Fare Calculator
               </Link>
             </li>
             <li>
               <Link to="/pooling" className="hover:text-foreground">
-                Pooling
+                Pooling Simulator
+              </Link>
+            </li>
+            <li>
+              <Link to="/driver" className="hover:text-foreground">
+                Driver Earnings
               </Link>
             </li>
             <li>
               <Link to="/demand" className="hover:text-foreground">
-                Insights
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-sm font-semibold mb-3">Company</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>
-              <Link to="/admin" className="hover:text-foreground">
-                Analytics
-              </Link>
-            </li>
-            <li>
-              <Link to="/assistant" className="hover:text-foreground">
-                Help
+                Demand Trends
               </Link>
             </li>
           </ul>
