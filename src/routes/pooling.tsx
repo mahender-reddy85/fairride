@@ -82,7 +82,7 @@ function Pooling() {
                   <button
                     key={n}
                     onClick={() => setCoRiders(n)}
-                    className={`flex-1 py-2 rounded-md text-sm transition ${coRiders === n ? 'bg-success text-success-foreground font-bold' : 'bg-secondary text-foreground hover:bg-secondary/70'}`}
+                    className={`flex-1 py-2 rounded-md text-sm transition ${coRiders === n ? 'bg-foreground text-background font-bold shadow-sm' : 'bg-secondary text-foreground hover:bg-secondary/70'}`}
                   >
                     +{n} Rider
                   </button>
@@ -152,13 +152,11 @@ function Pooling() {
                 <RouteIcon className="size-4" />
                 <span className="text-sm font-medium">Route visualization</span>
               </div>
-              <div className="relative h-64 flex-1 rounded-md border border-border bg-[#eef1f5] dark:bg-[#1a1f2c] overflow-hidden">
-                <svg viewBox="0 0 600 300" className="absolute inset-0 w-full h-full">
+              <div className="relative h-64 flex-1 rounded-md border border-border bg-[#E5E3DF] dark:bg-[#1a1f2c] overflow-hidden">
+                <svg viewBox="0 0 600 300" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
                   <defs>
-                    {/* City Grid Pattern */}
-                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                      <rect width="40" height="40" fill="none" />
-                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" className="text-muted/30" />
+                    <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-muted/20" />
                     </pattern>
                     {/* Map Pin Marker */}
                     <marker id="pin-start" viewBox="0 0 24 24" refX="12" refY="24" markerWidth="24" markerHeight="24">
@@ -172,14 +170,26 @@ function Pooling() {
                     </marker>
                   </defs>
 
-                  {/* Base Map / Roads */}
-                  <rect width="100%" height="100%" fill="url(#grid)" />
-                  
+                  {/* Water / River */}
+                  <path d="M -50 250 Q 150 200 300 350 T 650 100 L 650 350 L -50 350 Z" fill="#AADAFF" className="dark:fill-[#1e293b]" opacity="0.6" />
+                  <path d="M -50 220 Q 150 170 300 320 T 650 70 L 650 150 Q 400 350 250 250 T -50 280 Z" fill="#99C2FF" className="dark:fill-[#0f172a]" opacity="0.4" />
+
+                  {/* Parks */}
+                  <path d="M 50 20 Q 120 -10 180 40 Q 200 100 130 120 Q 60 140 30 80 Z" fill="#C8E6C9" className="dark:fill-[#064e3b]" opacity="0.5" />
+                  <path d="M 400 180 Q 480 150 520 220 Q 550 280 480 300 Q 400 310 380 240 Z" fill="#C8E6C9" className="dark:fill-[#064e3b]" opacity="0.5" />
+
+                  {/* Base Grid */}
+                  <rect width="100%" height="100%" fill="url(#smallGrid)" />
+
+                  {/* Minor Roads */}
+                  <path d="M 0 50 L 600 80 M 0 150 L 600 120 M 0 250 L 600 280 M 100 0 L 80 300 M 300 0 L 320 300 M 500 0 L 480 300" stroke="#FFFFFF" className="dark:stroke-[#334155]" strokeWidth="3" fill="none" opacity="0.8" />
+                  <path d="M 50 0 L 150 300 M 250 0 L 180 300 M 450 0 L 550 300 M 0 100 L 600 180 M 0 200 L 600 220" stroke="#FFFFFF" className="dark:stroke-[#334155]" strokeWidth="2" fill="none" opacity="0.6" />
+
                   {/* Major Arterial Roads */}
-                  <path d="M -20,120 Q 200,100 620,80" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="12" />
-                  <path d="M 280,-20 Q 300,150 250,320" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="8" />
-                  <path d="M -20,220 Q 250,250 620,200" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="8" />
-                  <path d="M 450,-20 Q 420,150 480,320" fill="none" stroke="currentColor" className="text-muted/40" strokeWidth="6" />
+                  <path d="M -20,120 Q 200,100 620,80" fill="none" stroke="#F5B041" className="dark:stroke-[#d97706]" opacity="0.4" strokeWidth="8" />
+                  <path d="M 280,-20 Q 300,150 250,320" fill="none" stroke="#F5B041" className="dark:stroke-[#d97706]" opacity="0.4" strokeWidth="6" />
+                  <path d="M -20,220 Q 250,250 620,200" fill="none" stroke="#F5B041" className="dark:stroke-[#d97706]" opacity="0.4" strokeWidth="6" />
+                  <path d="M 450,-20 Q 420,150 480,320" fill="none" stroke="#F5B041" className="dark:stroke-[#d97706]" opacity="0.4" strokeWidth="6" />
 
                   {/* Rider A Original Path (Faded out after pooling) */}
                   <path
@@ -226,7 +236,7 @@ function Pooling() {
                   <circle cx="60" cy="180" r="14" fill="oklch(0.22 0.02 260 / 0.1)" />
                   <path d="M 60,180 L 60,180" markerEnd="url(#pin-start)" stroke="none" />
                   
-                  <rect x="25" y="195" width="70" height="20" rx="4" fill="var(--color-card)" className="opacity-90" />
+                  <rect x="25" y="195" width="70" height="20" rx="4" fill="var(--color-card)" className="opacity-90 shadow-sm" />
                   <text x="60" y="208" fontSize="10" fontWeight="bold" fill="currentColor" className="text-foreground" textAnchor="middle">You</text>
 
                   {/* Rider B Pickup */}
@@ -240,13 +250,14 @@ function Pooling() {
                   <circle cx="540" cy="60" r="14" fill="oklch(0.65 0.16 245 / 0.1)" />
                   <path d="M 540,60 L 540,60" markerEnd="url(#pin-end)" stroke="none" />
                   
-                  <rect x="495" y="15" width="90" height="20" rx="4" fill="var(--color-card)" className="opacity-90" />
+                  <rect x="495" y="15" width="90" height="20" rx="4" fill="var(--color-card)" className="opacity-90 shadow-sm" />
                   <text x="540" y="28" fontSize="10" fontWeight="bold" fill="oklch(0.65 0.16 245)" textAnchor="middle">Shared Drop</text>
                   
                   {/* Small tooltip pointing to detour */}
-                  <path d="M 170,120 L 195,135" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
-                  <circle cx="170" cy="120" r="2" fill="currentColor" className="text-muted-foreground" />
-                  <text x="165" y="115" fontSize="9" fill="currentColor" className="text-muted-foreground" textAnchor="end">2 min detour</text>
+                  <path d="M 170,120 L 195,135" stroke="currentColor" strokeWidth="1" className="text-foreground" />
+                  <circle cx="170" cy="120" r="2" fill="currentColor" className="text-foreground" />
+                  <rect x="110" y="105" width="55" height="16" rx="2" fill="var(--color-card)" className="opacity-90" />
+                  <text x="137" y="116" fontSize="8" fontWeight="bold" fill="currentColor" className="text-foreground" textAnchor="middle">2m detour</text>
 
                 </svg>
               </div>

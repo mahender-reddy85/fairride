@@ -125,58 +125,60 @@ function DriverDash() {
             <div className="text-sm font-medium flex items-center gap-2">
               <Trophy className="size-4 text-warning" /> Driver score
             </div>
+            <span className="text-xs font-semibold text-success flex items-center gap-1">
+              <TrendingUp className="size-3" /> Top 10%
+            </span>
           </div>
-          <div className="h-44 relative flex items-center justify-center">
-            <svg viewBox="0 0 200 120" className="w-full h-full max-w-[240px]">
-              {/* Background Arc */}
-              <path
-                d="M 20 100 A 80 80 0 0 1 180 100"
-                fill="none"
-                stroke="currentColor"
-                className="text-secondary"
-                strokeWidth="16"
-                strokeLinecap="round"
-              />
-              {/* Foreground Arc - Animated */}
-              <path
-                d="M 20 100 A 80 80 0 0 1 180 100"
-                fill="none"
-                stroke="currentColor"
-                className="text-foreground"
-                strokeWidth="16"
-                strokeLinecap="round"
-                strokeDasharray="251.2"
-                strokeDashoffset="251.2"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  from="251.2"
-                  to={251.2 * (1 - 0.86)} // 86% score
-                  dur="1.5s"
-                  fill="freeze"
-                  calcMode="spline"
-                  keyTimes="0; 1"
-                  keySplines="0.4 0 0.2 1"
+          
+          <div className="h-28 relative mt-2">
+            <ResponsiveContainer>
+              <AreaChart data={[
+                { d: "Mon", s: 81 },
+                { d: "Tue", s: 82 },
+                { d: "Wed", s: 81 },
+                { d: "Thu", s: 83 },
+                { d: "Fri", s: 84 },
+                { d: "Sat", s: 86 },
+                { d: "Sun", s: 86 }
+              ]}>
+                <defs>
+                  <linearGradient id="scoreGradient" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="5%" stopColor="oklch(0.65 0.16 245)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="oklch(0.65 0.16 245)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Tooltip 
+                  contentStyle={tooltipStyle}
+                  cursor={{ stroke: "oklch(0.92 0.005 260)", strokeWidth: 1 }}
                 />
-              </path>
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-end pb-2 pointer-events-none">
-              <div className="text-4xl font-semibold text-foreground">86</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Excellent</div>
-            </div>
+                <Area 
+                  type="monotone" 
+                  dataKey="s" 
+                  stroke="oklch(0.65 0.16 245)" 
+                  fillOpacity={1} 
+                  fill="url(#scoreGradient)" 
+                  strokeWidth={3}
+                  activeDot={{ r: 6, fill: "oklch(1 0 0)", stroke: "oklch(0.65 0.16 245)" }}
+                  isAnimationActive={true}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+          
+          <div className="flex items-end justify-between mt-2">
             <div>
-              <div className="font-semibold">4.92</div>
-              <div className="text-muted-foreground">rating</div>
+              <div className="text-4xl font-bold text-foreground leading-none">86</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 font-bold">Excellent</div>
             </div>
-            <div>
-              <div className="font-semibold">98%</div>
-              <div className="text-muted-foreground">accept</div>
-            </div>
-            <div>
-              <div className="font-semibold">0</div>
-              <div className="text-muted-foreground">cancel</div>
+            <div className="text-right flex gap-3 text-xs">
+              <div>
+                <div className="font-semibold text-foreground">4.92</div>
+                <div className="text-muted-foreground">rating</div>
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">98%</div>
+                <div className="text-muted-foreground">accept</div>
+              </div>
             </div>
           </div>
         </Card>
