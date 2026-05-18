@@ -120,12 +120,14 @@ function DriverDash() {
               Top 10%
             </span>
           </div>
-          
+
           <div className="flex flex-col items-center justify-center py-2">
             <div className="text-5xl font-extrabold text-foreground tracking-tight">86</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Gold Status</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">
+              Gold Status
+            </div>
           </div>
-          
+
           <div className="mt-8 relative">
             {/* Markers */}
             <div className="absolute -top-5 w-full flex justify-between text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -134,7 +136,7 @@ function DriverDash() {
               <span className="text-foreground">Gold</span>
               <span>Plat</span>
             </div>
-            
+
             {/* Bar Background */}
             <div className="h-3 w-full bg-secondary rounded-full overflow-hidden flex relative">
               {/* Tiers background dividers */}
@@ -144,20 +146,20 @@ function DriverDash() {
                 <div className="w-[20%] border-r border-background/50 h-full"></div>
                 <div className="w-[10%] h-full"></div>
               </div>
-              
+
               {/* Animated Progress Fill */}
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-muted-foreground via-foreground to-success relative transition-all duration-1000 ease-out"
-                style={{ width: '86%' }}
+                style={{ width: "86%" }}
               ></div>
             </div>
-            
+
             {/* Current Score Pin */}
-            <div className="absolute top-1" style={{ left: '86%', transform: 'translateX(-50%)' }}>
+            <div className="absolute top-1" style={{ left: "86%", transform: "translateX(-50%)" }}>
               <div className="w-1 h-3 bg-background rounded-full mx-auto shadow-sm ring-1 ring-foreground"></div>
             </div>
           </div>
-          
+
           <div className="mt-8 grid grid-cols-3 gap-2 text-center text-xs border-t border-border pt-4">
             <div>
               <div className="font-semibold text-foreground">4.92</div>
@@ -181,24 +183,29 @@ function DriverDash() {
             <div className="text-lg font-semibold flex items-center gap-2">
               <IndianRupee className="size-5" /> Earnings Comparison Calculator
             </div>
-            <span className="text-sm text-success font-medium hidden sm:block">Keep 92% with FairRide</span>
+            <span className="text-sm text-success font-medium hidden sm:block">
+              Keep 92% with FairRide
+            </span>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <label className="text-sm font-medium mb-2 block">Weekly Gross Fares (₹)</label>
-              <input 
-                type="range" 
-                min="2000" 
-                max="40000" 
+              <input
+                type="range"
+                min="2000"
+                max="40000"
                 step="500"
-                value={grossWeekly} 
+                value={grossWeekly}
                 onChange={(e) => setGrossWeekly(parseInt(e.target.value))}
                 className="w-full accent-foreground"
               />
-              <div className="text-center mt-2 text-2xl font-bold">₹{grossWeekly.toLocaleString()}</div>
+              <div className="text-center mt-2 text-2xl font-bold">
+                ₹{grossWeekly.toLocaleString()}
+              </div>
               <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
-                Enter how much total fare riders pay in a week. Watch how platform commissions eat into your take-home pay on other apps compared to FairRide's flat 8% fee.
+                Enter how much total fare riders pay in a week. Watch how platform commissions eat
+                into your take-home pay on other apps compared to FairRide's flat 8% fee.
               </p>
             </div>
 
@@ -209,17 +216,17 @@ function DriverDash() {
                   <span>Avg ₹{earnings.uberNet.toLocaleString()}</span>
                 </div>
                 <div className="h-2 w-full flex rounded-full overflow-hidden bg-secondary">
-                  <div className="h-full bg-muted-foreground/40" style={{ width: '73%' }} />
+                  <div className="h-full bg-muted-foreground/40" style={{ width: "73%" }} />
                 </div>
               </div>
-              
+
               <div className="p-4 rounded-md border-2 border-foreground bg-secondary/30 shadow-sm relative overflow-hidden">
                 <div className="flex justify-between text-xs uppercase tracking-wider font-bold mb-1 text-foreground">
                   <span>FairRide (Net 92%)</span>
                   <span>₹{earnings.fairRideNet.toLocaleString()}</span>
                 </div>
                 <div className="h-2 w-full flex rounded-full overflow-hidden bg-background ring-1 ring-border">
-                  <div className="h-full bg-foreground" style={{ width: '92%' }} />
+                  <div className="h-full bg-foreground" style={{ width: "92%" }} />
                 </div>
                 <div className="mt-3 flex justify-between items-center">
                   <div className="text-sm font-medium text-success">
@@ -243,8 +250,7 @@ function DriverDash() {
               const x = i % 8;
               const y = Math.floor(i / 8);
               // Create a more "clustered" demand look using sin/cos
-              const intensity =
-                (Math.sin(x / 1.5) + Math.cos(y / 1.5) + 2) / 4;
+              const intensity = (Math.sin(x / 1.5) + Math.cos(y / 1.5) + 2) / 4;
               const bg =
                 intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"

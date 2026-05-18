@@ -2,14 +2,16 @@
 
 **Transparent fare pricing, smart pooling, and honest driver earnings — in one platform.**
 
-FairRide is a functional MVP that demonstrates how ride pricing *should* work. It is not a ride-booking app. It is a transparency and analytics tool that lets riders compare fares, simulate pooling savings, and lets drivers see exactly how much more they earn on a fair commission model.
+FairRide is a functional MVP that demonstrates how ride pricing _should_ work. It is not a ride-booking app. It is a transparency and analytics tool that lets riders compare fares, simulate pooling savings, and lets drivers see exactly how much more they earn on a fair commission model.
 
 ---
 
 ## What It Does
 
 ### Fare Calculator (Homepage)
+
 A full interactive ride workflow:
+
 1. Enter pickup and destination
 2. Set distance, traffic level, and time of day
 3. Choose vehicle type (Auto / Mini / Sedan / SUV)
@@ -19,12 +21,14 @@ A full interactive ride workflow:
 7. Simulate confirming a ride through to completion
 
 ### Pooling Simulator (`/pooling`)
+
 - Set a base solo fare, number of co-riders, and route overlap percentage
 - See the exact split fare using real overlap-based math
 - View CO₂ avoided and fuel saved
 - Interactive SVG route visualization showing pickup, co-rider, and shared drop
 
 ### Driver Earnings Calculator (`/driver`)
+
 - Slide weekly gross fares
 - Instantly compare net take-home: FairRide (92%) vs Uber/Ola (72–74%)
 - See weekly bonus and projected monthly income
@@ -33,6 +37,7 @@ A full interactive ride workflow:
 - Demand hotspot heatmap for positioning
 
 ### Demand Trends (`/demand`)
+
 - Switch between 4 real city scenarios: Office Peak, Weekend Rain, Airport Late Night, Midday Lull
 - 24-hour demand chart (Actual vs Predicted) that responds to the active scenario
 - City heatmap seeded deterministically from scenario data — no fake random flicker
@@ -48,14 +53,14 @@ FairRide's fare is calculated using real-world cost components — not arbitrary
 finalFare = (baseFare + distanceCost + trafficAdjustment + nightCharge + platformFee) × cityMultiplier
 ```
 
-| Component | Details |
-|---|---|
-| `baseFare` | Auto ₹20 / Mini ₹30 / Sedan ₹40 / SUV ₹60 |
-| `distanceCost` | Distance × per-km rate (₹10–₹22 by type) |
-| `trafficAdjustment` | Light +₹0 / Moderate +₹15 / Heavy +₹40 |
-| `nightCharge` | Late Night +₹25 |
-| `platformFee` | Fixed ₹15 (vs percentage-based market fee) |
-| `cityMultiplier` | 1.05× (standard metro factor) |
+| Component           | Details                                    |
+| ------------------- | ------------------------------------------ |
+| `baseFare`          | Auto ₹20 / Mini ₹30 / Sedan ₹40 / SUV ₹60  |
+| `distanceCost`      | Distance × per-km rate (₹10–₹22 by type)   |
+| `trafficAdjustment` | Light +₹0 / Moderate +₹15 / Heavy +₹40     |
+| `nightCharge`       | Late Night +₹25                            |
+| `platformFee`       | Fixed ₹15 (vs percentage-based market fee) |
+| `cityMultiplier`    | 1.05× (standard metro factor)              |
 
 Market (Uber/Ola) estimates use a dynamic surge multiplier (1.1×–1.5×) applied to a traditional base — showing how fare gaps widen during peak hours.
 
@@ -63,17 +68,17 @@ Market (Uber/Ola) estimates use a dynamic surge multiplier (1.1×–1.5×) appli
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 |
-| Router | TanStack Router v1 |
-| Data Fetching | TanStack Query v5 |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS v4 |
-| Charts | Recharts |
-| Icons | Lucide React |
-| Language | TypeScript |
-| Deployment | Vercel |
+| Layer         | Technology         |
+| ------------- | ------------------ |
+| Framework     | React 19           |
+| Router        | TanStack Router v1 |
+| Data Fetching | TanStack Query v5  |
+| Build Tool    | Vite 7             |
+| Styling       | Tailwind CSS v4    |
+| Charts        | Recharts           |
+| Icons         | Lucide React       |
+| Language      | TypeScript         |
+| Deployment    | Vercel             |
 
 ---
 
@@ -131,11 +136,11 @@ npm run preview
 
 ## Commission Model
 
-| Platform | Commission | Driver Keeps |
-|---|---|---|
-| Uber | ~28% | 72% |
-| Ola | ~26% | 74% |
-| **FairRide** | **8%** | **92%** |
+| Platform     | Commission | Driver Keeps |
+| ------------ | ---------- | ------------ |
+| Uber         | ~28%       | 72%          |
+| Ola          | ~26%       | 74%          |
+| **FairRide** | **8%**     | **92%**      |
 
 The 8% platform fee is fixed and flat — no percentage cuts that grow with fare value.
 

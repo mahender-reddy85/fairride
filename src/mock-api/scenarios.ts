@@ -58,6 +58,6 @@ export const MOCK_HOURLY_DEMAND = Array.from({ length: 24 }).map((_, h) => {
   const base = isPeak ? 85 : h < 6 ? 20 : 45;
   return {
     hour: `${h}:00`,
-    demandIndex: base + (Math.sin(h) * 10), // static curve, no random jitter
+    demandIndex: base + Math.sin(h) * 10, // static curve, no random jitter
   };
 });

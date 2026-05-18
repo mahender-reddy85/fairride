@@ -6,12 +6,12 @@ export function calculateFare(
   distanceKm: number,
   type: RideType,
   traffic: TrafficLevel,
-  timeOfDay: TimeOfDay
+  timeOfDay: TimeOfDay,
 ) {
   // Real-world cost components
   const baseFares = { Auto: 20, Mini: 30, Sedan: 40, SUV: 60 };
   const perKmRates = { Auto: 10, Mini: 13, Sedan: 16, SUV: 22 };
-  
+
   const baseFare = baseFares[type];
   const perKmRate = perKmRates[type];
   const distanceCost = distanceKm * perKmRate;
@@ -20,34 +20,31 @@ export function calculateFare(
   const trafficAdjustment = traffic === "Heavy" ? 40 : traffic === "Moderate" ? 15 : 0;
   const nightCharge = timeOfDay === "Late Night" ? 25 : 0;
   const cityMultiplier = 1.05; // Standard metro city factor
-  
+
   // FairRide platform fee (fixed flat fee vs percentage)
   const platformFee = 15;
 
   const finalFairRideFare = Math.round(
-    (baseFare + distanceCost + trafficAdjustment + nightCharge + platformFee) * cityMultiplier
+    (baseFare + distanceCost + trafficAdjustment + nightCharge + platformFee) * cityMultiplier,
   );
 
   // Compare against traditional algorithms that rely on dynamic surge multipliers
-  const marketSurge = traffic === "Heavy" ? 1.5 : timeOfDay === "Peak (Morning/Evening)" ? 1.3 : 1.1;
+  const marketSurge =
+    traffic === "Heavy" ? 1.5 : timeOfDay === "Peak (Morning/Evening)" ? 1.3 : 1.1;
   const traditionalBase = baseFare + distanceCost + (timeOfDay === "Late Night" ? 20 : 0);
-  
-  const uberEstimate = Math.round((traditionalBase * marketSurge) + 20); // Uber avg
-  const olaEstimate = Math.round((traditionalBase * (marketSurge - 0.05)) + 15); // Ola avg
+
+  const uberEstimate = Math.round(traditionalBase * marketSurge + 20); // Uber avg
+  const olaEstimate = Math.round(traditionalBase * (marketSurge - 0.05) + 15); // Ola avg
 
   return { fairRidePrice: finalFairRideFare, uberEstimate, olaEstimate };
 }
 
-export function calculatePoolingSavings(
-  baseFare: number,
-  coRiders: number,
-  overlapPct: number
-) {
+export function calculatePoolingSavings(baseFare: number, coRiders: number, overlapPct: number) {
   const overlapPortion = baseFare * (overlapPct / 100);
   const uniquePortion = baseFare - overlapPortion;
   const splitOverlap = overlapPortion / (coRiders + 1);
 
-  const finalFare = Math.round((uniquePortion + splitOverlap) + 10); // 10rs routing fee
+  const finalFare = Math.round(uniquePortion + splitOverlap + 10); // 10rs routing fee
   const saved = baseFare - finalFare;
   const co2Saved = Math.round(baseFare * 0.05 * coRiders * (overlapPct / 100));
 

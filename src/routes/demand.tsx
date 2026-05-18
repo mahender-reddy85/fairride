@@ -53,10 +53,14 @@ function Demand() {
     (1.8 * scenario.demandMultiplier).toFixed(2),
   ];
 
-  const weatherIcon = 
-    scenario.weather === "Rain" ? <CloudRain className="size-4" /> : 
-    scenario.weather === "Storm" ? <CloudLightning className="size-4" /> : 
-    <Sun className="size-4" />;
+  const weatherIcon =
+    scenario.weather === "Rain" ? (
+      <CloudRain className="size-4" />
+    ) : scenario.weather === "Storm" ? (
+      <CloudLightning className="size-4" />
+    ) : (
+      <Sun className="size-4" />
+    );
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
@@ -72,8 +76,8 @@ function Demand() {
             key={s.id}
             onClick={() => setActiveScenarioId(s.id)}
             className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-              activeScenarioId === s.id 
-                ? "bg-foreground text-background" 
+              activeScenarioId === s.id
+                ? "bg-foreground text-background"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -81,14 +85,18 @@ function Demand() {
           </button>
         ))}
       </div>
-      
+
       <p className="text-center text-sm text-muted-foreground mt-4 mb-8 max-w-2xl mx-auto">
         {scenario.description}
       </p>
 
       <div className="mt-6 grid md:grid-cols-4 gap-4">
         <Stat label="Data Source" value="Demo" sub={scenario.name} />
-        <Stat label="Active Drivers" value={scenario.activeDrivers.toLocaleString()} sub="simulated online" />
+        <Stat
+          label="Active Drivers"
+          value={scenario.activeDrivers.toLocaleString()}
+          sub="simulated online"
+        />
         <Stat label="Weather" value={scenario.weather} sub="Impact applied" />
         <Stat label="Monitored Zones" value="184" />
       </div>
@@ -158,7 +166,9 @@ function Demand() {
               const y = Math.floor(i / 10);
               // Deterministic seed based on scenario multiplier
               const seed = scenario.demandMultiplier * 10;
-              const intensity = ((Math.cos(x / 2 + seed) + Math.sin(y / 2 + seed) + 2) / 4) * (scenario.demandMultiplier / 1.5);
+              const intensity =
+                ((Math.cos(x / 2 + seed) + Math.sin(y / 2 + seed) + 2) / 4) *
+                (scenario.demandMultiplier / 1.5);
               const bg =
                 intensity > 0.8
                   ? "oklch(0.22 0.02 260 / 0.95)"
@@ -181,7 +191,10 @@ function Demand() {
           <div className="mt-4 flex items-center justify-between text-[10px] text-muted-foreground uppercase tracking-widest">
             <span>Low demand</span>
             <div className="flex-1 mx-4 h-1 rounded-full overflow-hidden bg-secondary">
-              <div className="h-full bg-foreground/20" style={{ width: `${Math.min(100, scenario.demandMultiplier * 60)}%` }} />
+              <div
+                className="h-full bg-foreground/20"
+                style={{ width: `${Math.min(100, scenario.demandMultiplier * 60)}%` }}
+              />
             </div>
             <span>High</span>
           </div>

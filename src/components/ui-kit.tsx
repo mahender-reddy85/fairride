@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
+import type { ReactNode, ElementType } from "react";
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
   return (
@@ -10,11 +10,31 @@ export function Card({ children, className }: { children: ReactNode; className?:
 }
 
 // Typography System
-export function Heading({ children, className, as: Component = "h3" }: { children: ReactNode; className?: string; as?: any }) {
-  return <Component className={cn("text-xl font-semibold tracking-tight text-foreground", className)}>{children}</Component>;
+export function Heading({
+  children,
+  className,
+  as: Component = "h3",
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: ElementType;
+}) {
+  return (
+    <Component className={cn("text-xl font-semibold tracking-tight text-foreground", className)}>
+      {children}
+    </Component>
+  );
 }
 
-export function Label({ children, className, htmlFor }: { children: ReactNode; className?: string; htmlFor?: string }) {
+export function Label({
+  children,
+  className,
+  htmlFor,
+}: {
+  children: ReactNode;
+  className?: string;
+  htmlFor?: string;
+}) {
   return (
     <label htmlFor={htmlFor} className={cn("text-sm font-medium text-foreground", className)}>
       {children}
@@ -27,7 +47,11 @@ export function Caption({ children, className }: { children: ReactNode; classNam
 }
 
 export function Metric({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("text-3xl font-bold tracking-tight text-foreground", className)}>{children}</div>;
+  return (
+    <div className={cn("text-3xl font-bold tracking-tight text-foreground", className)}>
+      {children}
+    </div>
+  );
 }
 
 // Backwards-compatible alias used by existing routes
